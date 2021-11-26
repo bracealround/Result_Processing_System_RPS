@@ -3,4 +3,4 @@ from . import views
 
 
 # URLconf
-urlpatterns = [path("", views.home_view)]
+urlpatterns = []
