@@ -32,6 +32,7 @@ class teacher(models.Model):
     teacher_dept_no=models.ForeignKey(department,on_delete=models.CASCADE)
     first_name=models.TextField(max_length=50)
     last_name=models.TextField(max_length=50)
+    title=models.TextField(max_length=50)
     department=models.TextField(max_length=10,default='No')
 
 
