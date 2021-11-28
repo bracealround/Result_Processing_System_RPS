@@ -7,3 +7,9 @@ def students(request):
 
 def teachers(request):
     return render(request,'rps/teachers.html')
+
+def results(request):
+    return render(request,'rps/results.html')
+
+def teacher_results(request):
+    return render(request,'rps/teacher_results.html')
