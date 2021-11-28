@@ -4,6 +4,5 @@
 
     <h2><b>Joined: </b>{{ user.date_joined }}</h2>
     <h2><b>Email: </b>{{ user.email }}</h2>
-    <a href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
 
 {% endblock %}

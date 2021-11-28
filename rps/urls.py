@@ -3,4 +3,7 @@ from . import views
 
 
 # URLconf
-urlpatterns = []
+urlpatterns = [
+    path('students/', views.students, name='rps-students'),
+    path('teachers/', views.teachers, name='rps-teachers'),
+]
