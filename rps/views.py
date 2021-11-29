@@ -13,3 +13,6 @@ def results(request):
 
 def teacher_results(request):
     return render(request,'rps/teacher_results.html')
+
+def dashboard(request):
+    return render(request,'rps/dashboard.html')

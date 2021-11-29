@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils.translation import gettext as _
 
 # Create your models here.
 # Department table
 class Department(models.Model):
-    dept_no = models.CharField(max_length=3)
-    dept_name = models.CharField(max_length=50)
+    dept_no = models.CharField(_("dept_no"),max_length=3)
+    dept_name = models.CharField(_("dept_name"),max_length=50)
 
     def __str__(self):
         return str(self.dept_name) + " ( " + str(self.dept_no) + " )"
@@ -53,11 +54,11 @@ class Teacher(models.Model):
 
 # Course table (ManyToMany relation to be built with Students)
 class Course(models.Model):
-    course_no = models.CharField(primary_key=True, max_length=20)
-    course_name = models.CharField(max_length=50, default=models.SET_DEFAULT)
+    course_no = models.CharField(_("course_no"),primary_key=True, max_length=20)
+    course_name = models.CharField(_("course_name"),max_length=50, default=models.SET_DEFAULT)
     course_dept_no = models.ForeignKey(Department, on_delete=models.CASCADE)
-    sem = models.IntegerField()
-    credit_no = models.DecimalField(max_digits=20, decimal_places=2)
+    sem = models.IntegerField(_("sem"))
+    credit_no = models.DecimalField(_("credit_no"),max_digits=20, decimal_places=2)
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
 
     def __str__(self):
