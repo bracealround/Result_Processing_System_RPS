@@ -7,7 +7,9 @@ from .manager import CustomUserManager
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
+    last_login = models.DateTimeField(
+        verbose_name="last login", auto_now=True, null=True, blank=True
+    )
     is_teacher = models.BooleanField("teacher status", default=False)
     is_student = models.BooleanField("student status", default=False)
 
