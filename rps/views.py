@@ -1,15 +1,24 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-def students(request):
-    return render(request,'rps/students.html')
+@login_required(login_url="login")
+def home_view(request):
+
+    return render(request, "home.html", {})
 
 
-def teachers(request):
-    return render(request,'rps/teachers.html')
+def students_view(request):
+    return render(request, "students.html", {})
 
-def results(request):
-    return render(request,'rps/results.html')
 
-def teacher_results(request):
-    return render(request,'rps/teacher_results.html')
+def teachers_view(request):
+    return render(request, "teachers.html", {})
+
+
+def results_view(request):
+    return render(request, "results.html", {})
+
+
+def edit_results_view(request):
+    return render(request, "edit-results.html", {})

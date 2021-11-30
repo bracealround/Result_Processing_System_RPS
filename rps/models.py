@@ -5,18 +5,18 @@ from django.conf import settings
 # Create your models here.
 # Department table
 class Department(models.Model):
-    dept_no = models.CharField(max_length=3)
+    dept_code = models.CharField(max_length=3, unique=True, null=True)
     dept_name = models.CharField(max_length=50)
 
     def __str__(self):
-        return str(self.dept_name) + " ( " + str(self.dept_no) + " )"
+        return str(self.dept_name) + " ( " + str(self.dept_code) + " )"
 
 
 # # Student table (ManyToMany relation to be built with Course)
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    registration_no = models.CharField(max_length=20)
-    student_dept_no = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
+    registration_no = models.IntegerField(unique=True)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     session = models.CharField(max_length=20)
@@ -34,29 +34,21 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    teacher_id = models.IntegerField(unique=True)
-    teacher_dept_no = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     title = models.CharField(max_length=50)
 
     def __str__(self):
-        return (
-            str(self.first_name)
-            + " "
-            + str(self.last_name)
-            + " ( "
-            + str(self.registration_no)
-            + " )"
-        )
+        return str(self.first_name) + " " + str(self.last_name)
 
 
 # Course table (ManyToMany relation to be built with Students)
 class Course(models.Model):
-    course_no = models.CharField(primary_key=True, max_length=20)
-    course_name = models.CharField(max_length=50, default=models.SET_DEFAULT)
-    course_dept_no = models.ForeignKey(Department, on_delete=models.CASCADE)
-    sem = models.IntegerField()
+    course_code = models.CharField(primary_key=True, max_length=20)
+    course_name = models.CharField(max_length=50)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    semester = models.IntegerField()
     credit_no = models.DecimalField(max_digits=20, decimal_places=2)
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
 
@@ -64,28 +56,29 @@ class Course(models.Model):
         return (
             str(self.course_name)
             + " ( "
-            + str(self.course_no)
+            + str(self.course_code)
             + " )"
-            + str(self.course_dept_no)
+            + str(self.department)
         )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["course_no", "course_dept_no", "sem"], name="unique_subject"
+                fields=["course_code", "department", "semester"],
+                name="unique_subject",
             )
         ]
-        ordering = ["course_dept_no", "sem", "course_no"]
-        # unique_together = (('course_no', 'course_dept_no','sem'),)
+        ordering = ["department", "semester", "course_code"]
+        # unique_together = (('course_code', 'course_dept_code','sem'),)
 
 
 # Mark table
 class Mark(models.Model):
-    mark_registration_no = models.ForeignKey(Student, on_delete=models.CASCADE)
-    mark_course_no = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     term_test = models.DecimalField(max_digits=20, decimal_places=2)
     attendance = models.IntegerField(default=0)
-    total_attendence = models.DecimalField(max_digits=20, decimal_places=2)
+    total_attendence = models.IntegerField(default=0)
     other_assesment = models.DecimalField(max_digits=20, decimal_places=2)
     semester_final = models.DecimalField(max_digits=20, decimal_places=2)
     final_result = models.DecimalField(max_digits=20, decimal_places=2)
@@ -101,15 +94,10 @@ class Mark(models.Model):
         return final_result
 
     def __str__(self):
-        return str(self.mark_registration_no) + " ( " + str(self.mark_course_no) + " )"
+        return str(self.student) + " ( " + str(self.course) + " )"
 
     class Meta:
-        unique_together = (("mark_registration_no", "mark_course_no"),)
-
-
-class Semester(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.PROTECT)
-    mark = models.ForeignKey(Mark, on_delete=models.PROTECT)
+        unique_together = (("student", "course"),)
 
 
 # # result table

@@ -25,5 +25,5 @@ urlpatterns = [
         name="login",
     ),
     path("", include("users.urls")),
-    path("rps/", include("rps.urls")),
+    path("", include("rps.urls")),
 ]

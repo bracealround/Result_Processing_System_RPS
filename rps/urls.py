@@ -4,9 +4,8 @@ from . import views
 
 # URLconf
 urlpatterns = [
-    path('students/', views.students, name='rps-students'),
-    path('results/', views.results, name='rps-result'),
-    path('teachers/', views.teachers, name='rps-teachers'),
-    path('teachers/results/', views.teacher_results, name='rps-teacher_results'),
-    path('teachers/results/individual', views.teacher_results, name='rps-teacher_results_individual'),
+    path("students/", views.students_view, name="students"),
+    path("teachers/", views.teachers_view, name="teachers"),
+    path("results/", views.results_view, name="result"),
+    path("results/edit", views.edit_results_view, name="edit-results"),
 ]
