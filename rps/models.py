@@ -70,7 +70,6 @@ class Course(models.Model):
             )
         ]
         ordering = ["department", "semester", "course_code"]
-        # unique_together = (('course_code', 'course_dept_code','sem'),)
 
 
 # Mark table
@@ -83,7 +82,6 @@ class Mark(models.Model):
     other_assesment = models.DecimalField(max_digits=20, decimal_places=2)
     semester_final = models.DecimalField(max_digits=20, decimal_places=2)
     final_result = models.DecimalField(max_digits=20, decimal_places=2)
-    # current_cr=models.IntegerField(default=0)
     @property
     def final_result(self):
         final_result = (

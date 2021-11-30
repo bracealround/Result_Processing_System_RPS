@@ -2,7 +2,6 @@
 
 
 {% block content %}
-<<<<<<< HEAD
 
     <div class="card mb-4">
         <div class="card-header">
@@ -489,22 +488,4 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="{% static 'rps/datatables-simple-demo.js' %}"></script>
     
-=======
-   <h1>This is results page</h1>
-   <tr role="row" class="odd">
-      <td class="">{{ student. }}</td>
-      <td class="">{{ object.select_student.student_name }}</td>
-      <td class="">{{ object.select_student.student_roll }}</td>
-      <td class="">{{ object.select_student.student_class }}</td>
-      <td class="">{{ object.select_student.student_reg }}</td>
-      <td class="">{{ object.marks.subject_0_mark }} | {{ object.marks.subject_1_mark }} | {{ object.marks.subject_2_mark }}</td>
-      <td>
-          <a href="{% url 'results:update_result' object.id %}" class="btn btn-primary"><i class="fa fa-edit" title="Edit Record"></i>
-          </a>
-          <a href="{% url 'results:delete_result' object.id %}" class="btn btn-danger"><i class="fa fa-trash" title="Delete Record"></i>
-          </a>
-  
-      </td>
-  </tr>
->>>>>>> origin/main
 {% endblock %}
