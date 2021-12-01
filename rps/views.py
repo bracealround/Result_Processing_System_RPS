@@ -1,5 +1,22 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+
+# Function for checking whether user is a student or not
+def is_student(user):
+    if user:
+        return user.is_student
+
+    return False
+
+
+# Function for checking whether user is a teacher or not
+def is_teacher(user):
+    if user:
+        return user.is_teacher
+
+    return False
+
 
 # Create your views here.
 @login_required(login_url="login")
@@ -8,17 +25,25 @@ def home_view(request):
     return render(request, "home.html", {})
 
 
+@login_required(login_url="login")
+@user_passes_test(is_student, login_url="home")
 def students_view(request):
     return render(request, "students.html", {})
 
 
+@login_required(login_url="login")
+@user_passes_test(is_teacher, login_url="home")
 def teachers_view(request):
     return render(request, "teachers.html", {})
 
 
+@login_required(login_url="login")
+@user_passes_test(is_student, login_url="home")
 def results_view(request):
     return render(request, "results.html", {})
 
 
+@login_required(login_url="login")
+@user_passes_test(is_teacher, login_url="home")
 def edit_results_view(request):
     return render(request, "edit-results.html", {})
