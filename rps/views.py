@@ -10,9 +10,6 @@ from django import forms
 from .forms import individual_resultForm
 
 
-    
-
-
 # Function for checking whether user is a student or not
 def is_student(user):
     if user:
@@ -46,8 +43,8 @@ def students_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
 def teachers_view(request):
-    	teacher = Teacher.objects.get(user = request.user)
-	return render(request, "teachers.html", {"teacher": teacher})
+    teacher = Teacher.objects.get(user=request.user)
+    return render(request, "teachers.html", {"teacher": teacher})
 
 
 @login_required(login_url="login")
@@ -63,7 +60,7 @@ def results_view(request):
 @user_passes_test(is_teacher, login_url="home")
 def edit_results_view(request):
     # if this is a POST request we need to process the form data
-    if request.method == 'POST':
+    if request.method == "POST":
         # create a form instance and populate it with data from the request:
         form = individual_resultForm(request.POST)
         # check whether it's valid:
@@ -71,13 +68,13 @@ def edit_results_view(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
+            return HttpResponseRedirect("/thanks/")
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = individual_resultForm()
 
-    return render(request, 'edit-results.html', {'form': form})
+    return render(request, "edit-results.html", {"form": form})
 
 
 @login_required(login_url="login")
