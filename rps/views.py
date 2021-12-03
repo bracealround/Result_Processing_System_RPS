@@ -98,4 +98,4 @@ def upload_csv(request):
 		logging.getLogger("error_logger").error("Unable to upload file. "+repr(e))
 		messages.error(request,"Unable to upload file. "+repr(e))
 
-	#return HttpResponseRedirect(reverse("csv_upload"))
+	return HttpResponseRedirect(reverse("csv_upload"))
