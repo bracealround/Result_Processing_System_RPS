@@ -4,7 +4,12 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import logging
-from rps.models import Course, Mark
+from rps.models import Course, Mark, Student, Teacher
+from django import forms
+from .forms import individual_resultForm
+
+
+    
 
 
 # Function for checking whether user is a student or not
@@ -33,13 +38,15 @@ def home_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def students_view(request):
-    return render(request, "students.html", {})
+		student = Student.objects.get(user = request.user)
+		return render(request, "students.html", {"student": student})
 
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
 def teachers_view(request):
-    return render(request, "teachers.html", {})
+    	teacher = Teacher.objects.get(user = request.user)
+	return render(request, "teachers.html", {"teacher": teacher})
 
 
 @login_required(login_url="login")
@@ -54,7 +61,22 @@ def results_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
 def edit_results_view(request):
-    return render(request, "edit-results.html", {})
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = individual_resultForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('/thanks/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = individual_resultForm()
+
+    return render(request, 'edit-results.html', {'form': form})
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
@@ -77,22 +99,22 @@ def upload_csv(request):
 
 		lines = file_data.split("\n")
 		#loop over the lines and save them in db. If error , store as string and then display
-		#for line in lines:						
-		#	fields = line.split(",")
-		#	data_dict = {}
-		#	data_dict["name"] = fields[0]
-		#	data_dict["start_date_time"] = fields[1]
-		#	data_dict["end_date_time"] = fields[2]
-		#	data_dict["notes"] = fields[3]
-		#	try:
-		#		form = EventsForm(data_dict)
-		#		if form.is_valid():
-		#			form.save()					
-		#		else:
-		#			logging.getLogger("error_logger").error(form.errors.as_json())												
-		#	except Exception as e:
-		#		logging.getLogger("error_logger").error(repr(e))					
-		#		pass
+		for line in lines:						
+			fields = line.split(",")
+			data_dict = {}
+			data_dict["name"] = fields[0]
+			data_dict["start_date_time"] = fields[1]
+			data_dict["end_date_time"] = fields[2]
+			data_dict["notes"] = fields[3]
+			try:
+				form = EventsForm(data_dict)
+				if form.is_valid():
+					form.save()					
+				else:
+					logging.getLogger("error_logger").error(form.errors.as_json())												
+			except Exception as e:
+				logging.getLogger("error_logger").error(repr(e))					
+				pass
 
 	except Exception as e:
 		logging.getLogger("error_logger").error("Unable to upload file. "+repr(e))
