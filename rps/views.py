@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from decimal import Decimal
 import logging
-from rps.models import Course, Mark
+from rps.models import Course, Mark, Student, Teacher
 
 
 # Function for checking whether user is a student or not
@@ -33,7 +34,8 @@ def home_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def students_view(request):
-    return render(request, "students.html", {})
+    student = Student.objects.get(user=request.user)
+    return render(request, "students.html", {"student": student})
 
 
 @login_required(login_url="login")
@@ -56,46 +58,76 @@ def results_view(request):
 def edit_results_view(request):
     return render(request, "edit-results.html", {})
 
+
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
 def upload_csv(request):
-	data = {}
-	if "GET" == request.method:
-		return render(request, "csv_upload.html", data)
-    # if not GET, then proceed
-	try:
-		csv_file = request.FILES["csv_file"]
-		if not csv_file.name.endswith('.csv'):
-			messages.error(request,'File is not CSV type')
-			return HttpResponseRedirect(reverse("csv_upload"))
-        #if file is too large, return
-		if csv_file.multiple_chunks():
-			messages.error(request,"Uploaded file is too big (%.2f MB)." % (csv_file.size/(1000*1000),))
-			return HttpResponseRedirect(reverse("csv_upload"))
+    data = {}
+    if "GET" == request.method:
+        return render(request, "csv_upload.html", data)
+        # if not GET, then proceed
+    try:
+        csv_file = request.FILES["csv_file"]
+        if not csv_file.name.endswith(".csv"):
+            messages.error(request, "File is not CSV type")
+            return HttpResponseRedirect(reverse("csv_upload"))
+            # if file is too large, return
+        if csv_file.multiple_chunks():
+            messages.error(
+                request,
+                "Uploaded file is too big (%.2f MB)."
+                % (csv_file.size / (1000 * 1000),),
+            )
+            return HttpResponseRedirect(reverse("csv_upload"))
 
-		file_data = csv_file.read().decode("utf-8")		
+        file_data = csv_file.read().decode("utf-8")
 
-		lines = file_data.split("\n")
-		#loop over the lines and save them in db. If error , store as string and then display
-		#for line in lines:						
-		#	fields = line.split(",")
-		#	data_dict = {}
-		#	data_dict["name"] = fields[0]
-		#	data_dict["start_date_time"] = fields[1]
-		#	data_dict["end_date_time"] = fields[2]
-		#	data_dict["notes"] = fields[3]
-		#	try:
-		#		form = EventsForm(data_dict)
-		#		if form.is_valid():
-		#			form.save()					
-		#		else:
-		#			logging.getLogger("error_logger").error(form.errors.as_json())												
-		#	except Exception as e:
-		#		logging.getLogger("error_logger").error(repr(e))					
-		#		pass
+        lines = file_data.split("\n")
+        print("debug")
+        for line in lines:
+            fields = line.split(",")
+            mark = Mark()
+            registration_no = int(fields[0])
+            print(1)
+            student = Student.objects.get(registration_no=registration_no)
+            print(2)
+            mark.student = student
+            print(3)
+            course = Course.objects.get(course_code="BNG101")
+            print(4)
+            mark.course = course
+            mark.term_test = Decimal(fields[1])
+            print(5)
+            mark.attendance = int(fields[2])
+            print(6)
+            mark.total_attendence = int(fields[3])
+            print(7)
+            mark.other_assesment = Decimal(fields[4])
+            print(8)
+            mark.semester_final = Decimal(fields[5])
+            print(9)
+            mark.save()
 
-	except Exception as e:
-		logging.getLogger("error_logger").error("Unable to upload file. "+repr(e))
-		messages.error(request,"Unable to upload file. "+repr(e))
+        # loop over the lines and save them in db. If error , store as string and then display
+        # for line in lines:
+        # 	fields = line.split(",")
+        # 	data_dict = {}
+        # 	data_dict["name"] = fields[0]
+        # 	data_dict["start_date_time"] = fields[1]
+        # 	data_dict["end_date_time"] = fields[2]
+        # 	data_dict["notes"] = fields[3]
+        # 	try:
+        # 		form = EventsForm(data_dict)
+        # 		if form.is_valid():
+        # 			form.save()
+        # 		else:
+        # 			logging.getLogger("error_logger").error(form.errors.as_json())
+        # 	except Exception as e:
+        # 		logging.getLogger("error_logger").error(repr(e))
+        # 		pass
 
-	return HttpResponseRedirect(reverse("csv_upload"))
+    except Exception as e:
+        logging.getLogger("error_logger").error("Unable to upload file. " + repr(e))
+        messages.error(request, "Unable to upload file. " + repr(e))
+
+    return HttpResponseRedirect(reverse("csv_upload"))
