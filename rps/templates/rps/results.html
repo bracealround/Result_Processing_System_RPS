@@ -12,15 +12,16 @@
             <table class="table table-bordered table-striped" id="datatablesSimple">
                 <thead class="table-dark">
                     <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th>Age</th>
-                        <th>Start date</th>
-                        <th>Salary</th>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>Semester</th>
+                        <th>Credit</th>
+                        <th>GPA</th>
+                        <th>Grade</th>
+                        <th>Final Mark</th>
                     </tr>
                 </thead>
-                <tfoot>
+                <!-- <tfoot>
                     <tr>
                         <th>Name</th>
                         <th>Position</th>
@@ -29,8 +30,21 @@
                         <th>Start date</th>
                         <th>Salary</th>
                     </tr>
-                </tfoot>
+                </tfoot> -->
                 <tbody>
+
+                    {% for mark in marks %}
+                        <tr>
+                            <td> {{mark.course.course_code}} </td>
+                            <td> {{mark.course.course_name}} </td>
+                            <td> {{mark.course.semester}} </td>
+                            <td> {{mark.course.credit_no}} </td>
+                            <td> {{mark.gpa}} </td>
+                            <td> {{mark.grade}} </td>
+                            <td> {{mark.final_result}} </td>
+                        </tr>
+                    {% endfor %}
+
                     <tr>
                         <td>Tiger Nixon</td>
                         <td>System Architect</td>
@@ -486,6 +500,11 @@
     
     {% load static %}
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script src="{% static 'rps/datatables-simple-demo.js' %}"></script>
+    <script>
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+            new simpleDatatables.DataTable(datatablesSimple);
+        }
+    </script>
     
 {% endblock %}

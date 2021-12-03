@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import gettext as _
+from decimal import *
+from rps.result import calculate_gpa
 
 # Create your models here.
 # Department table
@@ -13,7 +15,7 @@ class Department(models.Model):
         return str(self.dept_name) + " ( " + str(self.dept_code) + " )"
 
 
-# # Student table (ManyToMany relation to be built with Course)
+# Student table (ManyToMany relation to be built with Course)
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     registration_no = models.IntegerField(unique=True)
@@ -82,18 +84,34 @@ class Mark(models.Model):
     other_assesment = models.DecimalField(max_digits=20, decimal_places=2)
     semester_final = models.DecimalField(max_digits=20, decimal_places=2)
     final_result = models.DecimalField(max_digits=20, decimal_places=2)
+    gpa = models.DecimalField(max_digits=3, decimal_places=2, null=True)
+    grade = models.CharField(max_length=2, null=True)
+
     @property
     def final_result(self):
         final_result = (
-            self.term_test
-            + (self.attendance / self.total_attendence) * 10
-            + self.other_assesment
-            + (self.semester_final) * 0.6
+            round(
+                Decimal(
+                    (
+                        self.term_test
+                        + Decimal((self.attendance / self.total_attendence) * 10)
+                        + self.other_assesment
+                        + (self.semester_final) * Decimal("0.6")
+                    )
+                )
+                / Decimal("0.5")
+            )
+            * 0.5
         )
+
         return final_result
 
     def __str__(self):
         return str(self.student) + " ( " + str(self.course) + " )"
+
+    def save(self, *args, **kwargs):
+        self.gpa, self.grade = calculate_gpa(self.final_result)
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = (("student", "course"),)

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
+from rps.models import Course, Mark
 
 
 # Function for checking whether user is a student or not
@@ -21,8 +22,8 @@ def is_teacher(user):
 # Create your views here.
 @login_required(login_url="login")
 def home_view(request):
-
-    return render(request, "home.html", {})
+    query_set = Course.objects.all()
+    return render(request, "home.html", {"courses": list(query_set)})
 
 
 @login_required(login_url="login")
@@ -40,7 +41,10 @@ def teachers_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def results_view(request):
-    return render(request, "results.html", {})
+
+    query_set = Mark.objects.filter(student__user=request.user)
+
+    return render(request, "results.html", {"marks": list(query_set)})
 
 
 @login_required(login_url="login")
