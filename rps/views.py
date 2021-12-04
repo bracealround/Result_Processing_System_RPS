@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -7,7 +7,7 @@ from decimal import Decimal
 import logging
 from rps.models import Course, Mark, Student, Teacher
 from django import forms
-from .forms import individual_resultForm
+from .forms import individual_resultForm, upload_csv_form
 
 
 # Function for checking whether user is a student or not
@@ -59,22 +59,25 @@ def results_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
 def edit_results_view(request):
+    teacher = Teacher.objects.get(user=request.user)
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
-        form = individual_resultForm(request.POST)
+        form = individual_resultForm(request.POST, teacher=teacher)
+        csv_form = upload_csv_form(request.POST, teacher=teacher)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponseRedirect("/thanks/")
+            return redirect("edit-results")
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = individual_resultForm()
+        form = individual_resultForm(teacher=teacher)
+        csv_form = upload_csv_form(teacher=teacher)
 
-    return render(request, "edit-results.html", {"form": form})
+    return render(request, "edit-results.html", {"form": form, "csv_form": csv_form})
 
 
 @login_required(login_url="login")
