@@ -3,10 +3,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db.models import Count
 from decimal import Decimal
-import logging
-from rps.models import Course, Mark, Student, Teacher
-from django import forms
+from logging import *
+from rps.models import Course, Department, Mark, Student, Teacher
 from .forms import individual_resultForm, upload_csv_form
 
 
@@ -30,7 +30,7 @@ def is_teacher(user):
 @login_required(login_url="login")
 def home_view(request):
     query_set = Course.objects.all()
-    return render(request, "home.html", {"courses": list(query_set)})
+    return render(request, "dashboard.html", {"courses": list(query_set)})
 
 
 @login_required(login_url="login")
@@ -45,6 +45,16 @@ def students_view(request):
 def teachers_view(request):
     teacher = Teacher.objects.get(user=request.user)
     return render(request, "teachers.html", {"teacher": teacher})
+
+
+def department_view(request):
+    dept = Department.objects.all()
+    return render(request, "department.html", {"department": list(dept)})
+
+
+def institute_teacher_view(request):
+    teacher = Teacher.objects.all()
+    return render(request, "institute_teachers.html", {"ins_teacher": list(teacher)})
 
 
 @login_required(login_url="login")
