@@ -21,7 +21,9 @@
                         <div class="col-md-12"><label class="labels">Department: </label>{{student.department}}</div>
                         <div class="col-md-12"><label class="labels">Session: </label>{{student.session}}</div>
                     </div>
-                    <div class="mt-5 text-right"><button class="btn btn-primary profile-button" type="button">Edit Profile</button></div>
+                    <form action="{% url "edit_students_profile" %}">
+                        <input type="submit" value="Edit Profile" />
+                    </form>
                 </div>
             </div>
         </div>

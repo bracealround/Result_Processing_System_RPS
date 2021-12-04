@@ -46,15 +46,22 @@ def teachers_view(request):
     teacher = Teacher.objects.get(user=request.user)
     return render(request, "teachers.html", {"teacher": teacher})
 
-
+@login_required(login_url="login")
+@user_passes_test(is_teacher, login_url="home")
 def department_view(request):
     dept = Department.objects.all()
     return render(request, "department.html", {"department": list(dept)})
 
-
+@login_required(login_url="login")
+@user_passes_test(is_teacher, login_url="home")
 def institute_teacher_view(request):
     teacher = Teacher.objects.all()
     return render(request, "institute_teachers.html", {"ins_teacher": list(teacher)})
+
+@login_required(login_url="login")
+@user_passes_test(is_teacher, login_url="home")
+def edit_students_profile_view(request):
+    return render(request, "edit_students_profile.html", {})
 
 
 @login_required(login_url="login")
