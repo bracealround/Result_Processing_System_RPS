@@ -12,13 +12,9 @@
             <table class="table table-bordered table-striped" id="datatablesSimple">
                 <thead class="table-dark">
                     <tr>
-                        <th>Course Code</th>
-                        <th>Course Title</th>
-                        <th>Semester</th>
-                        <th>Credit</th>
-                        <th>GPA</th>
-                        <th>Grade</th>
-                        <th>Final Mark</th>
+                        <th>Teacher Name</th>
+                        <th>Teacher Department</th>
+                        <th>Designation</th>
                     </tr>
                 </thead>
                 <!-- <tfoot>
@@ -32,17 +28,15 @@
                     </tr>
                 </tfoot> -->
                 <tbody>
-                    {% for mark in marks %}
+
+                    {% for teacher in ins_teacher %}
                         <tr>
-                            <td> {{mark.course.course_code}} </td>
-                            <td> {{mark.course.course_name}} </td>
-                            <td> {{mark.course.semester}} </td>
-                            <td> {{mark.course.credit_no}} </td>
-                            <td> {{mark.gpa}} </td>
-                            <td> {{mark.grade}} </td>
-                            <td> {{mark.final_result}} </td>
+                            <td> {{teacher.first_name}} {{ teacher.last_name}} </td>
+                            <td> {{teacher.department}} </td>
+                            <td> {{teacher.title}} </td>
                         </tr>
                     {% endfor %}
+                    
                 </tbody>
             </table>
         </div>
