@@ -67,9 +67,15 @@ def edit_results_view(request):
         csv_form = upload_csv_form(request.POST, teacher=teacher)
         # check whether it's valid:
         if form.is_valid():
+            print(form)
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
+
+            return redirect("edit-results")
+
+        elif csv_form.is_valid():
+            print("csv: ", request.FILES["csv_file"])
             return redirect("edit-results")
 
     # if a GET (or any other method) we'll create a blank form

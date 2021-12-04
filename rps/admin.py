@@ -4,6 +4,8 @@ from .models import Student, Teacher, Department, Course, Mark
 
 class MarkAdmin(admin.ModelAdmin):
 
+    list_display = ()
+
     exclude = ("gpa", "grade")
 
     # fieldsets = ((None, {"fields": ("")}),)
