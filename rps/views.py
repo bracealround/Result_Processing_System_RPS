@@ -67,7 +67,14 @@ def institute_teacher_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def edit_students_profile_view(request):
-    return render(request, "edit_students_profile.html", {})
+    student = Student.objects.get(user=request.user)
+    return render(request, "edit_students_profile.html", {"student": student})
+
+@login_required(login_url="login")
+@user_passes_test(is_teacher, login_url="home")
+def edit_teachers_profile_view(request):
+    teacher = Teacher.objects.get(user=request.user)
+    return render(request, "edit_teachers_profile.html", {"teacher": teacher})
 
 
 @login_required(login_url="login")
