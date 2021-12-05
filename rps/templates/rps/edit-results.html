@@ -2,23 +2,31 @@
 
 {% block content %}
 
-<h2>Teacher Result Update</h2>
-<h2>{{request.session.error}}</h2>
-
 <!-- <div class="row">
     <div class="col-sm-6"> -->
   <div class="container">
-    <div class="row content">
+    <div class="row content mt-4">
 
       <div class="col col-md-4 align-self-start my-auto">
         <div class="card">
           <div class="card-body bg-light">
+
+            <h4 class="card-text">Upload CSV</h4>
+
+            <h6>Make sure:</h6>
+            <ol>
+              <li>Each record contains <b>registration-no</b>, <b>term-test mark</b>, <b>attendance</b>, <b>total number of classes</b>, <b>other assignments</b> and <b>semester final mark</b> respectively</li>
+              <li>No cell is blank or contains null value</li>
+              <li>Each record is unique and no duplicate exists</li>
+              <li>CSV contains no invalid record</li>
+            </ol>
+
             {% load crispy_forms_tags %}
             <form method="POST" enctype="multipart/form-data" class="form-horizontal"> 
               {% csrf_token %}
               {{ csv_form|crispy }}
 
-              <p class="card-text">Click on the the options below to add result according to your preference.</p>
+              <p class="card-text">Click on the the options below to add the CSV file.</p>
 
               <div class="form-group">
                 <div class="mx-auto">
@@ -68,7 +76,7 @@
       <div class="col col-md-4">
         <div class="card w-75">
           <div class="card-body bg-light">
-            <h4 class="card-text">Upload individual student result</h4>
+            <h4 class="card-text">Add result</h4>
 
             {% load crispy_forms_tags %}
             <form method="POST" enctype="multipart/form-data">
@@ -86,6 +94,14 @@
       </div>
 
     </div>
+
+    {% if request.session.error %}
+      <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <strong>Error!</strong> {{request.session.error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+
   </div>
     <!-- </div>
 </div> -->

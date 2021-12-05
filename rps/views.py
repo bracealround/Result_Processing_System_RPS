@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db import transaction, IntegrityError
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Value
+from django.db.models.functions import Concat
 from decimal import Decimal
 import logging
 from rps.models import Course, Department, Mark, Student, Teacher
@@ -30,8 +32,22 @@ def is_teacher(user):
 # Create your views here.
 @login_required(login_url="login")
 def home_view(request):
-    query_set = Course.objects.annotate(number_of_teachers=Count("teacher"))
-    return render(request, "dashboard.html", {"courses": list(query_set)})
+
+    if request.user.is_teacher:
+        first_name = Teacher.objects.get(user=request.user).first_name
+        last_name = Teacher.objects.get(user=request.user).last_name
+        full_name = first_name + " " + last_name
+
+    elif request.user.is_student:
+        first_name = Student.objects.get(user=request.user).first_name
+        last_name = Student.objects.get(user=request.user).last_name
+        full_name = first_name + " " + last_name
+
+    else:
+        full_name = "Admin"
+
+    print(full_name)
+    return render(request, "dashboard.html", {"name": full_name})
 
 
 @login_required(login_url="login")
@@ -69,6 +85,7 @@ def institute_teacher_view(request):
 def edit_students_profile_view(request):
     student = Student.objects.get(user=request.user)
     return render(request, "edit_students_profile.html", {"student": student})
+
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
@@ -137,10 +154,10 @@ def edit_results_view(request):
 
                     mark.save()
 
-            except Exception as e:
+            except IntegrityError as e:
                 request.session["error"] = str(e)
 
-            except IntegrityError as e:
+            except Exception as e:
                 request.session["error"] = str(e)
 
             # return redirect("edit-results")
@@ -152,12 +169,13 @@ def edit_results_view(request):
 
             try:
                 upload_csv(request, csv_form.cleaned_data["course"])
-            except Exception as e:
-                # print("gub ", str(e))
-                request.session["error"] = str(e)
 
             except IntegrityError as e:
                 # print("gubbbbbb ", str(e))
+                request.session["error"] = str(e)
+
+            except Exception as e:
+                # print("gub ", str(e))
                 request.session["error"] = str(e)
 
             # return redirect("edit-results")
@@ -168,7 +186,11 @@ def edit_results_view(request):
         form = individual_resultForm(teacher=teacher)
         csv_form = upload_csv_form(teacher=teacher)
 
-    return render(request, "edit-results.html", {"form": form, "csv_form": csv_form})
+    render_response = render(
+        request, "edit-results.html", {"form": form, "csv_form": csv_form}
+    )
+    request.session.pop("error", None)
+    return render_response
 
 
 @login_required(login_url="login")
