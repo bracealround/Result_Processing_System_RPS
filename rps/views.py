@@ -30,13 +30,14 @@ def is_teacher(user):
 # Create your views here.
 @login_required(login_url="login")
 def home_view(request):
-    query_set = Course.objects.all()
+    query_set = Course.objects.annotate(number_of_teachers=Count("teacher"))
     return render(request, "dashboard.html", {"courses": list(query_set)})
 
 
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def students_view(request):
+    # student = Student.objects.get(user=request.user)
     student = Student.objects.get(user=request.user)
     return render(request, "students.html", {"student": student})
 
@@ -48,14 +49,25 @@ def teachers_view(request):
     return render(request, "teachers.html", {"teacher": teacher})
 
 
+@login_required(login_url="login")
 def department_view(request):
     dept = Department.objects.all()
-    return render(request, "department.html", {"department": list(dept)})
+    query_set = Department.objects.annotate(
+        number_of_teachers=Count("teacher"), number_of_students=Count("student")
+    )
+    return render(request, "department.html", {"departments": list(query_set)})
 
 
+@login_required(login_url="login")
 def institute_teacher_view(request):
     teacher = Teacher.objects.all()
     return render(request, "institute_teachers.html", {"ins_teacher": list(teacher)})
+
+
+@login_required(login_url="login")
+@user_passes_test(is_student, login_url="home")
+def edit_students_profile_view(request):
+    return render(request, "edit_students_profile.html", {})
 
 
 @login_required(login_url="login")

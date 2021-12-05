@@ -30,12 +30,12 @@
                 </tfoot> -->
                 <tbody>
 
-                    {% for dep in department %}
+                    {% for dep in departments %}
                         <tr>
                             <td> {{dep.dept_code}} </td>
                             <td> {{dep.dept_name}} </td>
-                            <td> {{dep.teacher.all|length}} </td>
-                            <td> {{dep.student.all|length}} </td>
+                            <td> {{dep.number_of_teachers}} </td>
+                            <td> {{dep.number_of_students}} </td>
                         </tr>
                     {% endfor %}
                 </tbody>
