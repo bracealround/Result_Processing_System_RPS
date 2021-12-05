@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db import transaction, IntegrityError
-from django.db.models import Count
+from django.db.models import Count, Sum
 from decimal import Decimal
 import logging
 from rps.models import Course, Department, Mark, Student, Teacher
@@ -75,8 +75,22 @@ def edit_students_profile_view(request):
 def results_view(request):
 
     query_set = Mark.objects.filter(student__user=request.user)
+    total_credits = query_set.aggregate(Sum("course__credit_no"))[
+        "course__credit_no__sum"
+    ]
+    print("total: ", total_credits)
+    marks = list(query_set)
 
-    return render(request, "results.html", {"marks": list(query_set)})
+    sum = Decimal("0.0")
+    for mark in marks:
+        sum = sum + (mark.gpa * mark.course.credit_no)
+
+    print(sum)
+    cgpa = sum / total_credits
+    print("cgpa: ", cgpa)
+    return render(
+        request, "results.html", {"marks": list(query_set), "cgpa": round(cgpa, 2)}
+    )
 
 
 @login_required(login_url="login")

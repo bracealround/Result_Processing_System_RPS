@@ -8,7 +8,6 @@ class MarkAdmin(admin.ModelAdmin):
 
     exclude = ("gpa", "grade")
 
-   
 
 class StudentAdmin(admin.ModelAdmin):
 
@@ -25,11 +24,13 @@ class TeacherAdmin(admin.ModelAdmin):
 
     exclude = ()
 
+
 class DepartmentAdmin(admin.ModelAdmin):
 
     list_display = ("dept_code", "dept_name")
 
     exclude = ()
+
 
 class CourseAdmin(admin.ModelAdmin):
 
@@ -37,9 +38,10 @@ class CourseAdmin(admin.ModelAdmin):
 
     exclude = ()
 
+
 # Register your models here.
-admin.site.register(Student,StudentAdmin)
-admin.site.register(Teacher,TeacherAdmin)
-admin.site.register(Department,DepartmentAdmin)
-admin.site.register(Course,CourseAdmin)
+admin.site.register(Student, StudentAdmin)
+admin.site.register(Teacher, TeacherAdmin)
+admin.site.register(Department, DepartmentAdmin)
+admin.site.register(Course, CourseAdmin)
 admin.site.register(Mark, MarkAdmin)
