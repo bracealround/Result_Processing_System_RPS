@@ -119,6 +119,15 @@ def results_view(request):
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
+def view_results_view(request):
+
+    query_set = Mark.objects.filter(course__teacher__user=request.user)
+
+    return render(request, "view-results.html", {"marks": list(query_set)})
+
+
+@login_required(login_url="login")
+@user_passes_test(is_teacher, login_url="home")
 def edit_results_view(request):
 
     teacher = Teacher.objects.get(user=request.user)
@@ -154,8 +163,11 @@ def edit_results_view(request):
 
                     mark.save()
 
+            except ValueError as e:
+                raise ValueError("Some field contains data of unexpected type.")
+
             except IntegrityError as e:
-                request.session["error"] = str(e)
+                request.session["error"] = "Record probably already exists"
 
             except Exception as e:
                 request.session["error"] = str(e)
@@ -226,28 +238,52 @@ def upload_csv(request, course):
 
             lines = file_data.split("\n")
             # print("debug")
-            for line in lines:
-                fields = line.split(",")
-                mark = Mark()
-                registration_no = int(fields[0])
-                # print(1)
-                student = Student.objects.get(registration_no=registration_no)
-                # print(2)
-                mark.student = student
-                # print(3)
-                # print(4)
-                mark.course = course
-                mark.term_test = Decimal(fields[1])
-                # print(5)
-                mark.attendance = int(fields[2])
-                # print(6)
-                mark.total_attendence = int(fields[3])
-                # print(7)
-                mark.other_assesment = Decimal(fields[4])
-                # print(8)
-                mark.semester_final = Decimal(fields[5])
-                # print(9)
-                mark.save()
+
+            index = 0
+            try:
+                for index, line in enumerate(lines):
+                    fields = line.split(",")
+                    mark = Mark()
+                    registration_no = int(fields[0])
+                    print(index)
+                    student = Student.objects.get(registration_no=registration_no)
+                    # print(2)
+                    mark.student = student
+                    # print(3)
+                    # print(4)
+                    mark.course = course
+                    mark.term_test = Decimal(fields[1])
+                    # print(5)
+                    mark.attendance = int(fields[2])
+                    # print(6)
+                    mark.total_attendence = int(fields[3])
+                    # print(7)
+                    mark.other_assesment = Decimal(fields[4])
+                    # print(8)
+                    mark.semester_final = Decimal(fields[5])
+                    # print(9)
+                    mark.save()
+            except ValueError as e:
+                raise ValueError(
+                    "CSV contains data of unexpected type at record no. "
+                    + str(index + 1)
+                    + "."
+                )
+
+            except IntegrityError as e:
+                raise IntegrityError(
+                    "CSV may be containing duplicate record at row "
+                    + str(index + 1)
+                    + "."
+                )
+
+            except Exception as e:
+                print(repr(e))
+                raise Exception(
+                    "CSV contains invalid data. Please fix it and try again. Hint: Check record no. "
+                    + str(index + 1)
+                    + "."
+                )
 
         # loop over the lines and save them in db. If error , store as string and then display
         # for line in lines:
@@ -268,18 +304,15 @@ def upload_csv(request, course):
         # 		pass
     except TypeError as e:
         raise TypeError(str(e))
+
+    except ValueError as e:
+        raise ValueError(str(e))
+
     except IntegrityError as e:
-        print("bugggg ", str(e))
-        raise ValueError(
-            "Result not submitted! CSV may be containing duplicate records. Hint: "
-            + str(e)
-        )
+        raise IntegrityError(str(e))
 
     except Exception as e:
-        print("bug ", str(e))
-        raise ValueError(
-            "CSV contains invalid data. Please fix it and try again. Hint: " + str(e)
-        )
+        raise Exception(str(e))
         # logging.getLogger("error_logger").error("Unable to upload file. " + repr(e))
         # messages.error(request, "Unable to upload file. " + repr(e))
     # return HttpResponseRedirect(reverse("csv_upload"))

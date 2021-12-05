@@ -6,19 +6,19 @@
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
-            View All of Your Scores
+            View all the results prepared by you
         </div>
         <div class="card-body mt-3">
             <table class="table table-bordered table-striped" id="datatablesSimple">
                 <thead class="table-dark">
                     <tr>
+                        <th>Registration No.</th>
                         <th>Course Code</th>
                         <th>Course Title</th>
-                        <th>Semester</th>
                         <th>Credit</th>
+                        <th>Final Mark</th>
                         <th>GPA</th>
                         <th>Grade</th>
-                        <th>Final Mark</th>
                     </tr>
                 </thead>
 
@@ -35,25 +35,15 @@
                 <tbody>
                     {% for mark in marks %}
                         <tr>
+                            <td> {{mark.student.registration_no}} </td>
                             <td> {{mark.course.course_code}} </td>
                             <td> {{mark.course.course_name}} </td>
-                            <td> {{mark.course.semester}} </td>
                             <td> {{mark.course.credit_no}} </td>
+                            <td> {{mark.final_result}} </td>
                             <td> {{mark.gpa}} </td>
                             <td> {{mark.grade}} </td>
-                            <td> {{mark.final_result}} </td>
                         </tr>
                     {% endfor %}
-
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>CGPA</th>
-                        <th>{{cgpa}}</th>
-                    </tr>
                     
                 </tbody>
             </table>

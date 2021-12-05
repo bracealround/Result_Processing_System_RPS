@@ -38,13 +38,14 @@
                 <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Shortcuts</a> -->
 
                 {% if user.is_student %}
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'result' %}">Student_Result</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'students' %}">Student_Profile</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'result' %}">Student Result</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'students' %}">Student Profile</a>
                 {% endif %}
 
                 {% if user.is_teacher %}
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'edit-results' %}">Teacher_Update_Result</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'teachers' %}">Teacher_Profile</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'view-results' %}">View Results</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'edit-results' %}">Update Result</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'teachers' %}">Teacher Profile</a>
                 {% endif %}
                 
                 <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a> -->
