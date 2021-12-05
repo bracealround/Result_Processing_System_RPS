@@ -10,7 +10,7 @@ from django.db.models.functions import Concat
 from decimal import Decimal
 import logging
 from rps.models import Course, Department, Mark, Student, Teacher
-from .forms import individual_resultForm, upload_csv_form
+from .forms import individual_resultForm, upload_csv_form, edit_profile
 
 
 # Function for checking whether user is a student or not
@@ -84,14 +84,84 @@ def institute_teacher_view(request):
 @user_passes_test(is_student, login_url="home")
 def edit_students_profile_view(request):
     student = Student.objects.get(user=request.user)
-    return render(request, "edit_students_profile.html", {"student": student})
+
+    if request.method == "POST":
+        form = edit_profile(
+            request.POST, first_name=student.first_name, last_name=student.last_name
+        )
+
+        try:
+            with transaction.atomic():
+                if form.is_valid():
+                    print("yep")
+
+                    first_name = form.cleaned_data["first_name"]
+                    last_name = form.cleaned_data["last_name"]
+
+                    student.first_name = first_name
+                    student.last_name = last_name
+
+                    student.save()
+
+                    request.session["is_saved"] = "True"
+
+        except IntegrityError as e:
+            request.session["error"] = str(e)
+        except Exception as e:
+            request.session["error"] = str(e)
+
+    else:
+        form = edit_profile(first_name=student.first_name, last_name=student.last_name)
+
+    render_response = render(
+        request, "edit_students_profile.html", {"student": student, "form": form}
+    )
+
+    request.session.pop("error", None)
+    request.session.pop("is_saved", None)
+    return render_response
 
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
 def edit_teachers_profile_view(request):
     teacher = Teacher.objects.get(user=request.user)
-    return render(request, "edit_teachers_profile.html", {"teacher": teacher})
+
+    if request.method == "POST":
+        form = edit_profile(
+            request.POST, first_name=teacher.first_name, last_name=teacher.last_name
+        )
+
+        try:
+            with transaction.atomic():
+                if form.is_valid():
+                    print("yep")
+
+                    first_name = form.cleaned_data["first_name"]
+                    last_name = form.cleaned_data["last_name"]
+
+                    teacher.first_name = first_name
+                    teacher.last_name = last_name
+
+                    teacher.save()
+
+                    request.session["is_saved"] = "True"
+
+        except IntegrityError as e:
+            request.session["error"] = str(e)
+        except Exception as e:
+            request.session["error"] = str(e)
+
+    else:
+        form = edit_profile(first_name=teacher.first_name, last_name=teacher.last_name)
+
+    render_response = render(
+        request, "edit_teachers_profile.html", {"teacher": teacher, "form": form}
+    )
+
+    request.session.pop("error", None)
+    request.session.pop("is_saved", None)
+    return render_response
 
 
 @login_required(login_url="login")
@@ -164,10 +234,12 @@ def edit_results_view(request):
                     mark.save()
 
             except ValueError as e:
-                raise ValueError("Some field contains data of unexpected type.")
+                request.session[
+                    "error"
+                ] = "Some field contains data of unexpected type."
 
             except IntegrityError as e:
-                request.session["error"] = "Record probably already exists"
+                request.session["error"] = "Record probably already exists."
 
             except Exception as e:
                 request.session["error"] = str(e)

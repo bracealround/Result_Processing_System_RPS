@@ -32,3 +32,20 @@ class upload_csv_form(forms.Form):
         self.fields["course"].queryset = Course.objects.all().filter(
             teacher=self.teacher
         )
+
+
+class edit_profile(forms.Form):
+
+    first_name = forms.CharField(max_length=50, widget=None)
+    last_name = forms.CharField(max_length=50, widget=None)
+
+    def __init__(self, *args, **kwargs):
+        self.first_name = kwargs.pop("first_name")
+        self.last_name = kwargs.pop("last_name")
+        super(edit_profile, self).__init__(*args, **kwargs)
+        self.fields["first_name"].widget = forms.TextInput(
+            attrs={"class": "col-md-6", "placeholder": self.first_name}
+        )
+        self.fields["last_name"].widget = forms.TextInput(
+            attrs={"class": "col-md-6", "placeholder": self.last_name}
+        )

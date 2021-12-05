@@ -1,29 +1,37 @@
 {% extends "rps/base.html" %}
 
 {% block content %}
-    <div class="container rounded bg-white mt-5 mb-5">
-        <div class="row">
-            <div class="card col-md-3 border-right">
+    <div class="container rounded bg-light mt-5 mb-5">
+        <div class="row mt-5">
+            <div class="card col-md-6 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">{{ user.email }}</span><span class="text-black-50">{{teacher.title}}</span><span> </span></div>
             </div>
-            <div class="card col-md-5 border-right">
+            <div class="card col-md-6 border-right">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="text-right">Students Profile</h4>
+                        <h4 class="text-right">Update Profile</h4>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" placeholder="first name" value=""></div>
-                        <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value="" placeholder="surname"></div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="enter email id" value=""></div>
-                        <div class="col-md-12"><label class="labels">Session</label><input type="text" class="form-control" placeholder="Enter Your Session(Ex:2016-17)" value=""></div>
-                    </div>
-                    <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
+
+                    {% load crispy_forms_tags %}
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+            
+                        <div class="form-group text-center">
+                            <button class="btn btn-clas btn-primary mt-3" type="submit">Save Profile</button>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
-    </div>
-    </div>
+
+        {% if request.session.is_saved == 'True' %}
+            <div class="alert alert-success alert-dismissible fade show mt-5" role="alert">
+                <strong>Profile Updated!</strong> New name: {{teacher.first_name}} {{teacher.last_name}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+
     </div>
 {% endblock %}
