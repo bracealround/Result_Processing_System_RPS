@@ -81,7 +81,7 @@ def edit_results_view(request):
         # check whether it's valid:
         if form.is_valid():
 
-            form = individual_resultForm(teacher=teacher)
+            csv_form = upload_csv_form(teacher=teacher)
             # print(form)
             # process the data in form.cleaned_data as required
             # ...
@@ -149,7 +149,9 @@ def upload_csv(request, course):
         with transaction.atomic():
             csv_file = request.FILES["csv_file"]
             if not csv_file.name.endswith(".csv"):
-                raise TypeError("It was not a CSV file. Please upload a CSV file")
+                raise TypeError(
+                    "It was probably not a CSV file. Please upload a CSV file"
+                )
                 # messages.error(request, "File is not CSV type")
                 # return HttpResponseRedirect(reverse("csv_upload"))
                 # if file is too large, return
@@ -209,6 +211,14 @@ def upload_csv(request, course):
         # 	except Exception as e:
         # 		logging.getLogger("error_logger").error(repr(e))
         # 		pass
+    except TypeError as e:
+        raise TypeError(str(e))
+    except IntegrityError as e:
+        print("bugggg ", str(e))
+        raise ValueError(
+            "Result not submitted! CSV may be containing duplicate records. Hint: "
+            + str(e)
+        )
 
     except Exception as e:
         print("bug ", str(e))
@@ -217,7 +227,4 @@ def upload_csv(request, course):
         )
         # logging.getLogger("error_logger").error("Unable to upload file. " + repr(e))
         # messages.error(request, "Unable to upload file. " + repr(e))
-    except IntegrityError as e:
-        print("bugggg ", str(e))
-        raise ValueError("Result not submitted " + str(e))
     # return HttpResponseRedirect(reverse("csv_upload"))
