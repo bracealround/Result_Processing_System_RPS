@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db import transaction, IntegrityError
 from django.db.models import Count
 from decimal import Decimal
-from logging import *
+import logging
 from rps.models import Course, Department, Mark, Student, Teacher
 from .forms import individual_resultForm, upload_csv_form
 
@@ -69,27 +70,68 @@ def results_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
 def edit_results_view(request):
+
     teacher = Teacher.objects.get(user=request.user)
     # if this is a POST request we need to process the form data
     if request.method == "POST":
+        # request.session.pop("error", None)
         # create a form instance and populate it with data from the request:
         form = individual_resultForm(request.POST, teacher=teacher)
         csv_form = upload_csv_form(request.POST, teacher=teacher)
         # check whether it's valid:
         if form.is_valid():
-            print(form)
+
+            form = individual_resultForm(teacher=teacher)
+            # print(form)
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
 
-            return redirect("edit-results")
+            try:
+                with transaction.atomic():
+                    mark = Mark()
+
+                    registration_no = form.cleaned_data["registration_no"]
+                    student = Student.objects.get(registration_no=registration_no)
+                    mark.student = student
+
+                    mark.course = form.cleaned_data["course"]
+                    mark.term_test = form.cleaned_data["term_test"]
+                    mark.attendance = form.cleaned_data["attendance"]
+                    mark.total_attendence = form.cleaned_data["total_attendence"]
+                    mark.other_assesment = form.cleaned_data["other_assesment"]
+                    mark.semester_final = form.cleaned_data["semester_final"]
+
+                    mark.save()
+
+            except Exception as e:
+                request.session["error"] = str(e)
+
+            except IntegrityError as e:
+                request.session["error"] = str(e)
+
+            # return redirect("edit-results")
 
         elif csv_form.is_valid():
-            print("csv: ", request.FILES["csv_file"])
-            return redirect("edit-results")
+
+            form = individual_resultForm(teacher=teacher)
+            # print("csv: ", request.FILES["csv_file"])
+
+            try:
+                upload_csv(request, csv_form.cleaned_data["course"])
+            except Exception as e:
+                # print("gub ", str(e))
+                request.session["error"] = str(e)
+
+            except IntegrityError as e:
+                # print("gubbbbbb ", str(e))
+                request.session["error"] = str(e)
+
+            # return redirect("edit-results")
 
     # if a GET (or any other method) we'll create a blank form
     else:
+        request.session.pop("error", None)
         form = individual_resultForm(teacher=teacher)
         csv_form = upload_csv_form(teacher=teacher)
 
@@ -98,52 +140,57 @@ def edit_results_view(request):
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher, login_url="home")
-def upload_csv(request):
-    data = {}
-    if "GET" == request.method:
-        return render(request, "csv_upload.html", data)
-        # if not GET, then proceed
+def upload_csv(request, course):
+    # data = {}
+    # if "GET" == request.method:
+    #     return render(request, "csv_upload.html", data)
+    #     # if not GET, then proceed
     try:
-        csv_file = request.FILES["csv_file"]
-        if not csv_file.name.endswith(".csv"):
-            messages.error(request, "File is not CSV type")
-            return HttpResponseRedirect(reverse("csv_upload"))
-            # if file is too large, return
-        if csv_file.multiple_chunks():
-            messages.error(
-                request,
-                "Uploaded file is too big (%.2f MB)."
-                % (csv_file.size / (1000 * 1000),),
-            )
-            return HttpResponseRedirect(reverse("csv_upload"))
+        with transaction.atomic():
+            csv_file = request.FILES["csv_file"]
+            if not csv_file.name.endswith(".csv"):
+                raise TypeError("It was not a CSV file. Please upload a CSV file")
+                # messages.error(request, "File is not CSV type")
+                # return HttpResponseRedirect(reverse("csv_upload"))
+                # if file is too large, return
+            if csv_file.multiple_chunks():
+                raise Exception(
+                    "Uploaded file is too big (%.2f MB)."
+                    % (csv_file.size / (1000 * 1000),)
+                )
+                # messages.error(
+                #     request,
+                #     "Uploaded file is too big (%.2f MB)."
+                #     % (csv_file.size / (1000 * 1000),),
+                # )
+                # return HttpResponseRedirect(reverse("csv_upload"))
 
-        file_data = csv_file.read().decode("utf-8")
+            file_data = csv_file.read().decode("utf-8")
 
-        lines = file_data.split("\n")
-        print("debug")
-        for line in lines:
-            fields = line.split(",")
-            mark = Mark()
-            registration_no = int(fields[0])
-            print(1)
-            student = Student.objects.get(registration_no=registration_no)
-            print(2)
-            mark.student = student
-            print(3)
-            course = Course.objects.get(course_code="BNG101")
-            print(4)
-            mark.course = course
-            mark.term_test = Decimal(fields[1])
-            print(5)
-            mark.attendance = int(fields[2])
-            print(6)
-            mark.total_attendence = int(fields[3])
-            print(7)
-            mark.other_assesment = Decimal(fields[4])
-            print(8)
-            mark.semester_final = Decimal(fields[5])
-            print(9)
-            mark.save()
+            lines = file_data.split("\n")
+            # print("debug")
+            for line in lines:
+                fields = line.split(",")
+                mark = Mark()
+                registration_no = int(fields[0])
+                # print(1)
+                student = Student.objects.get(registration_no=registration_no)
+                # print(2)
+                mark.student = student
+                # print(3)
+                # print(4)
+                mark.course = course
+                mark.term_test = Decimal(fields[1])
+                # print(5)
+                mark.attendance = int(fields[2])
+                # print(6)
+                mark.total_attendence = int(fields[3])
+                # print(7)
+                mark.other_assesment = Decimal(fields[4])
+                # print(8)
+                mark.semester_final = Decimal(fields[5])
+                # print(9)
+                mark.save()
 
         # loop over the lines and save them in db. If error , store as string and then display
         # for line in lines:
@@ -164,7 +211,13 @@ def upload_csv(request):
         # 		pass
 
     except Exception as e:
-        logging.getLogger("error_logger").error("Unable to upload file. " + repr(e))
-        messages.error(request, "Unable to upload file. " + repr(e))
-
-    return HttpResponseRedirect(reverse("csv_upload"))
+        print("bug ", str(e))
+        raise ValueError(
+            "CSV contains invalid data. Please fix it and try again. Hint: " + str(e)
+        )
+        # logging.getLogger("error_logger").error("Unable to upload file. " + repr(e))
+        # messages.error(request, "Unable to upload file. " + repr(e))
+    except IntegrityError as e:
+        print("bugggg ", str(e))
+        raise ValueError("Result not submitted " + str(e))
+    # return HttpResponseRedirect(reverse("csv_upload"))

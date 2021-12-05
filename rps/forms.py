@@ -4,13 +4,13 @@ from rps.models import Course
 
 class individual_resultForm(forms.Form):
 
-    reg_no = forms.CharField(max_length=100)
+    registration_no = forms.IntegerField()
     course = forms.ModelChoiceField(queryset=None)
-    term_text_marks = forms.IntegerField()
-    attendence = forms.IntegerField()
+    term_test = forms.DecimalField()
+    attendance = forms.IntegerField()
     total_attendence = forms.IntegerField()
-    other_assesment = forms.IntegerField()
-    semester_final = forms.IntegerField()
+    other_assesment = forms.DecimalField()
+    semester_final = forms.DecimalField()
 
     def __init__(self, *args, **kwargs):
         self.teacher = kwargs.pop("teacher")
