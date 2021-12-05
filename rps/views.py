@@ -67,10 +67,10 @@ def teachers_view(request):
 
 @login_required(login_url="login")
 def department_view(request):
-    dept = Department.objects.all()
     query_set = Department.objects.annotate(
-        number_of_teachers=Count("teacher"), number_of_students=Count("student")
-    )
+        number_of_teachers=Count("teacher", distinct=True)
+    ).annotate(number_of_students=Count("student", distinct=True))
+
     return render(request, "department.html", {"departments": list(query_set)})
 
 
