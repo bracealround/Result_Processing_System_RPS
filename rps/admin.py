@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Student, Teacher, Department, Course, Mark
+from .models import Staffs, Student, Teacher, Department, Course, Mark
 
 
 class MarkAdmin(admin.ModelAdmin):
@@ -14,8 +14,6 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ("registration_no", "department", "session")
 
     exclude = ()
-
-    # fieldsets = ((None, {"fields": ("")}),)
 
 
 class TeacherAdmin(admin.ModelAdmin):
@@ -39,9 +37,17 @@ class CourseAdmin(admin.ModelAdmin):
     exclude = ()
 
 
+class StaffAdmin(admin.ModelAdmin):
+
+    list_display = ("first_name", "last_name", "title", "contact_no")
+
+    exclude = ()
+
+
 # Register your models here.
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Mark, MarkAdmin)
+admin.site.register(Staffs, StaffAdmin)

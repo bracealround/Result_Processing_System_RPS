@@ -9,7 +9,7 @@ from django.db.models import Count, Sum, Value
 from django.db.models.functions import Concat
 from decimal import Decimal
 import logging
-from rps.models import Course, Department, Mark, Student, Teacher
+from rps.models import Course, Department, Mark, Staffs, Student, Teacher
 from .forms import individual_resultForm, upload_csv_form, edit_profile
 
 
@@ -56,6 +56,11 @@ def students_view(request):
     # student = Student.objects.get(user=request.user)
     student = Student.objects.get(user=request.user)
     return render(request, "students.html", {"student": student})
+
+@login_required(login_url="login")
+def staff_view(request):
+    staff = Staffs.objects.all()
+    return render(request, "staffs.html", {"staff": list(staff)})
 
 
 @login_required(login_url="login")
