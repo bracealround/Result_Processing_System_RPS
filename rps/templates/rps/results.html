@@ -3,10 +3,35 @@
 
 {% block content %}
 
+<div class="row">
+    <div class="card text-white bg-primary mb-3" style="max-width: 30rem;">
+        <div class="card-header"><h4>Total Credit: 160</h4></div>
+        <div class="card-body">
+        </div>
+    </div>
+    <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
+        <div class="card-header"><h4>Credits Completed: </h4></div>
+        <div class="card-body">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="card text-white bg-success mb-3" style="max-width: 30rem;">
+        <div class="card-header"><h4>CGPA: {{cgpa}} </h4></div>
+        <div class="card-body">
+        </div>
+    </div>
+    <div class="card text-white bg-info mb-3" style="max-width: 30rem;">
+        <div class="card-header"><h4>Graduation Status: Incomplete</h4></div>
+        <div class="card-body">
+        </div>
+    </div>
+</div>
+
+
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
-            DataTable Example
         </div>
         <div class="card-body">
             <table class="table table-bordered table-striped" id="datatablesSimple">

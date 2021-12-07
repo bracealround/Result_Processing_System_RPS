@@ -46,8 +46,8 @@ def home_view(request):
     else:
         full_name = "Admin"
 
-    print(full_name)
-    return render(request, "dashboard.html", {"name": full_name})
+    total_number_dept = Department.objects.all().count()
+    return render(request, "dashboard.html", {"name": full_name, "total_number_of_dept": total_number_dept})
 
 
 @login_required(login_url="login")
@@ -75,7 +75,6 @@ def department_view(request):
     query_set = Department.objects.annotate(
         number_of_teachers=Count("teacher", distinct=True)
     ).annotate(number_of_students=Count("student", distinct=True))
-
     return render(request, "department.html", {"departments": list(query_set)})
 
 
