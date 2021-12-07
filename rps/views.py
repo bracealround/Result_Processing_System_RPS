@@ -187,7 +187,7 @@ def results_view(request):
     cgpa = sum / total_credits
     print("cgpa: ", cgpa)
     return render(
-        request, "results.html", {"marks": list(query_set), "cgpa": round(cgpa, 2)}
+        request, "results.html", {"marks": list(query_set), "cgpa": round(cgpa, 2), "completed_credit": round(total_credits,2)}
     )
 
 
