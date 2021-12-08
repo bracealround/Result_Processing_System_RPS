@@ -3,11 +3,10 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="card text-white bg-primary mb-3" style="max-width: 30rem;">
+<div class="row mt-3">
+    <div class="card text-white bg-primary mb-3 mx-3 " style="max-width: 30rem;">
         <div class="card-header"><h4>Total Credit: 160</h4></div>
-        <div class="card-body">
-        </div>
+        <div class="card-body"></div>
     </div>
     <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
         <div class="card-header"><h4>Credits Completed: {{completed_credit}} </h4></div>
@@ -16,13 +15,17 @@
     </div>
 </div>
 <div class="row">
-    <div class="card text-white bg-success mb-3" style="max-width: 30rem;">
+    <div class="card text-white bg-success mb-3 mx-3" style="max-width: 30rem;">
         <div class="card-header"><h4>CGPA: {{cgpa}} </h4></div>
         <div class="card-body">
         </div>
     </div>
     <div class="card text-white bg-info mb-3" style="max-width: 30rem;">
-        <div class="card-header"><h4>Graduation Status: Incomplete</h4></div>
+        {% if completed_credit < 160 %}
+            <div class="card-header"><h4>Graduation Status: Incomplete</h4></div>
+        {% else %}
+            <div class="card-header"><h4>Graduation Status: Complete</h4></div>
+        {% endif %}
         <div class="card-body">
         </div>
     </div>

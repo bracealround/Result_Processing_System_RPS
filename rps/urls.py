@@ -16,4 +16,5 @@ urlpatterns = [
     path("institute/staff/", views.staff_view, name="institute_staff"),
     path("students/edit_profile/", views.edit_students_profile_view, name="edit_students_profile"),
     path("teachers/edit_profile/",views.edit_teachers_profile_view,name="edit_teachers_profile"),
+    path("studnets/enrollment/",views.enrollment_view,name="enrollment"),
 ]

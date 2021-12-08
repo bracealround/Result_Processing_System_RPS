@@ -58,6 +58,13 @@ def students_view(request):
     return render(request, "students.html", {"student": student})
 
 @login_required(login_url="login")
+@user_passes_test(is_student, login_url="home")
+def enrollment_view(request):
+    # student = Student.objects.get(user=request.user)
+    course = Course.objects.all()
+    return render(request, "enrollment.html", {"course": course})
+
+@login_required(login_url="login")
 def staff_view(request):
     staff = Staffs.objects.all()
     return render(request, "staffs.html", {"staff": list(staff)})

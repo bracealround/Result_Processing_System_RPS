@@ -1,0 +1,43 @@
+{% extends "rps/base.html" %}
+
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        View all the results prepared by you:
+    </div>
+    <div class="card-body mt-3">
+        <table class="table table-bordered table-striped" id="datatablesSimple">
+            <thead class="table-dark">
+                <tr>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>Enroll</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for crs in course %}
+                    <tr>
+                        <td> {{crs.course_code}} </td>
+                        <td> {{crs.course_name}} </td>
+                        <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enroll Now</a></td>
+                    </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script>
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
+</script>
+
+{% endblock %}

@@ -38,8 +38,9 @@
                 <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Shortcuts</a> -->
 
                 {% if user.is_student %}
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'result' %}">Student Result</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'students' %}">Student Profile</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{%url 'enrollment' %}">Enroll Courses</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'result' %}">Student Result</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="!#">View Ranklist</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="!#">Download Result</a>
                 {% endif %}
@@ -48,8 +49,7 @@
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'view-results' %}">View Results</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'edit-results' %}">Teacher Update_Result</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'teachers' %}">Teacher Profile</a>
-                {% endif %}
-                
+                {% endif %}        
                 <!-- <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a> -->
             </div>
         </div>
