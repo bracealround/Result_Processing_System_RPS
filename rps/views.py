@@ -9,8 +9,28 @@ from django.db.models import Count, Sum, Value
 from django.db.models.functions import Concat
 from decimal import Decimal
 import logging
+from rps import models
 from rps.models import Course, Department, Mark, Staffs, Student, Teacher
 from .forms import individual_resultForm, upload_csv_form, edit_profile
+from django.http import HttpResponse
+from django.views.generic import View
+from django.template.loader import get_template
+from .utils import html_to_pdf #created in step 4
+import datetime
+from django.template.loader import render_to_string
+
+#Creating a class based view
+class GeneratePdf_view(View):
+     def get(self, request, *args, **kwargs):
+        data = Mark.objects.all().order_by('course')
+        open('temp.html', "w").write(render_to_string('results.html', {'data': data}))
+
+        # Converting the HTML template into a PDF file
+        pdf = html_to_pdf('temp.html')
+         
+         # rendering the template
+        return HttpResponse(pdf, content_type='application/pdf')
+
 
 
 # Function for checking whether user is a student or not

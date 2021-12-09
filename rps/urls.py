@@ -16,6 +16,7 @@ urlpatterns = [
     path("institute/staff/", views.staff_view, name="institute_staff"),
     path("institute/students/", views.institute_students_view, name="institute_student"),
     path("students/edit_profile/", views.edit_students_profile_view, name="edit_students_profile"),
-    path("teachers/edit_profile/",views.edit_teachers_profile_view,name="edit_teachers_profile"),
-    path("studnets/enrollment/",views.enrollment_view,name="enrollment"),
+    path("teachers/edit_profile/", views.edit_teachers_profile_view,name="edit_teachers_profile"),
+    path("studnets/enrollment/", views.enrollment_view,name="enrollment"),
+    path("studnets/downloadpdf/", views.GeneratePdf_view.as_view(),name="download"),
 ]
