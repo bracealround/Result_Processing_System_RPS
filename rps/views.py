@@ -47,7 +47,11 @@ def home_view(request):
         full_name = "Admin"
 
     total_number_dept = Department.objects.all().count()
-    return render(request, "dashboard.html", {"name": full_name, "total_number_of_dept": total_number_dept})
+    total_number_student = Student.objects.all().count()
+    total_number_teacher = Teacher.objects.all().count()
+    total_number_staff = Staffs.objects.all().count()
+    return render(request, "dashboard.html", {"name": full_name, "total_number_of_dept": total_number_dept, "total_number_of_students":total_number_student, 
+    "total_number_of_teachers": total_number_teacher, "total_number_of_staffs": total_number_staff})
 
 
 @login_required(login_url="login")
@@ -83,6 +87,11 @@ def department_view(request):
         number_of_teachers=Count("teacher", distinct=True)
     ).annotate(number_of_students=Count("student", distinct=True))
     return render(request, "department.html", {"departments": list(query_set)})
+
+@login_required(login_url="login")
+def institute_students_view(request):
+    student = Student.objects.all()
+    return render(request, "institute_students.html", {"ins_student": list(student)})
 
 
 @login_required(login_url="login")
