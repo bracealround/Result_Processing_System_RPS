@@ -1,0 +1,53 @@
+<div class="card-body">
+    <table class="table table-bordered table-striped" id="datatablesSimple">
+        <thead class="table-dark">
+            <tr>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th>Semester</th>
+                <th>Credit</th>
+                <th>Final Mark</th>
+                <th>Grade</th>
+                <th>GPA</th>
+            </tr>
+        </thead>
+
+        <!-- <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot> -->
+        <tbody>
+            {% for mark in marks %}
+                <tr>
+                    <td> {{mark.enrollment.course.course.course_code}} </td>
+                    <td> {{mark.enrollment.course.course.course_name}} </td>
+                    <td> {{mark.enrollment.course.semester}} </td>
+                    <td> {{mark.enrollment.course.course.credit_no}} </td>
+                    <td> {{mark.final_result}} </td>
+                    <td> {{mark.grade}} </td>
+                    <td> {{mark.gpa}} </td>
+                </tr>
+            {% endfor %}
+
+            <tr>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>CGPA</th>
+                <th>{{cgpa}}</th>
+            </tr>
+            
+        </tbody>
+    </table>
+</div>	
+{% for d in data %}
+    <h1 style="color:red">Registration No: {{ d }} </h1>
+{% endfor %}

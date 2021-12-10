@@ -10,7 +10,16 @@ from django.db.models.functions import Concat
 from decimal import Decimal
 import logging, datetime
 from rps import models
-from rps.models import Course, Department, Mark, Staff, Student, Teacher, Enrollment
+from rps.models import (
+    Course,
+    Department,
+    Mark,
+    Staff,
+    Student,
+    Teacher,
+    Enrollment,
+    Assignment,
+)
 from .forms import individual_resultForm, upload_csv_form, edit_profile
 from django.http import HttpResponse
 from django.views.generic import View
@@ -22,11 +31,22 @@ from django.template.loader import render_to_string
 # Creating a class based view
 class GeneratePdf_view(View):
     def get(self, request, *args, **kwargs):
-        data = Mark.objects.all().order_by("enrollment__course__course")
-        open("temp.html", "w").write(render_to_string("results.html", {"data": data}))
+        # data = Mark.objects.all().order_by("enrollment__course__course")
+        # data = {"data": "dummy_data"}
+        # print("tets", d)
+        # open("tmp.html", "w").write(
+        #     render_to_string("rps/results.html", {"data": data})
+        # )
+
+        query_set = Assignment.objects.filter(
+            department=request.user.student.department
+        )
+
+        d = {"data": list(query_set)}
+        # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
         # Converting the HTML template into a PDF file
-        pdf = html_to_pdf("temp.html")
+        pdf = html_to_pdf("rps/pdfresult.html", d)
 
         # rendering the template
         return HttpResponse(pdf, content_type="application/pdf")
@@ -94,8 +114,8 @@ def students_view(request):
 @user_passes_test(is_student, login_url="home")
 def enrollment_view(request):
     # student = Student.objects.get(user=request.user)
-    course = Course.objects.all()
-    return render(request, "enrollment.html", {"course": course})
+    query_set = Assignment.objects.filter(department=request.user.student.department)
+    return render(request, "enrollment.html", {"courses": list(query_set)})
 
 
 @login_required(login_url="login")
