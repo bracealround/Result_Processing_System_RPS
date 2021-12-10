@@ -8,19 +8,20 @@ from django.db import transaction, IntegrityError
 from django.db.models import Count, Sum, Value
 from django.db.models.functions import Concat
 from decimal import Decimal
-import logging
+import logging, datetime
 from rps import models
-from rps.models import Course, Department, Mark, Staffs, Student, Teacher
+from rps.models import Course, Department, Mark, Staff, Student, Teacher, Enrollment
 from .forms import individual_resultForm, upload_csv_form, edit_profile
 from django.http import HttpResponse
 from django.views.generic import View
 from django.template.loader import get_template
-from .utils import html_to_pdf #created in step 4
+from .utils import html_to_pdf  # created in step 4
 import datetime
 from django.template.loader import render_to_string
 
-#Creating a class based view
+# Creating a class based view
 class GeneratePdf_view(View):
+<<<<<<< HEAD
      def get(self, request, *args, **kwargs):
         data = Mark.objects.all()
         open('temps.html', "w").write(render_to_string('results.html', {'data': data}))
@@ -30,7 +31,17 @@ class GeneratePdf_view(View):
          
          # rendering the template
         return HttpResponse(pdf, content_type='application/pdf')
+=======
+    def get(self, request, *args, **kwargs):
+        data = Mark.objects.all().order_by("enrollment__course__course")
+        open("temp.html", "w").write(render_to_string("results.html", {"data": data}))
 
+        # Converting the HTML template into a PDF file
+        pdf = html_to_pdf("temp.html")
+>>>>>>> 155a07c7338c6632ed72e5fe3d1c6ffb3006922f
+
+        # rendering the template
+        return HttpResponse(pdf, content_type="application/pdf")
 
 
 # Function for checking whether user is a student or not
@@ -53,12 +64,12 @@ def is_teacher(user):
 @login_required(login_url="login")
 def home_view(request):
 
-    if request.user.is_teacher:
+    if request.user.is_teacher and Teacher.objects.filter(user=request.user).exists():
         first_name = Teacher.objects.get(user=request.user).first_name
         last_name = Teacher.objects.get(user=request.user).last_name
         full_name = first_name + " " + last_name
 
-    elif request.user.is_student:
+    elif request.user.is_student and Student.objects.filter(user=request.user).exists():
         first_name = Student.objects.get(user=request.user).first_name
         last_name = Student.objects.get(user=request.user).last_name
         full_name = first_name + " " + last_name
@@ -69,9 +80,18 @@ def home_view(request):
     total_number_dept = Department.objects.all().count()
     total_number_student = Student.objects.all().count()
     total_number_teacher = Teacher.objects.all().count()
-    total_number_staff = Staffs.objects.all().count()
-    return render(request, "dashboard.html", {"name": full_name, "total_number_of_dept": total_number_dept, "total_number_of_students":total_number_student, 
-    "total_number_of_teachers": total_number_teacher, "total_number_of_staffs": total_number_staff})
+    total_number_staffs = Staff.objects.all().count()
+    return render(
+        request,
+        "dashboard.html",
+        {
+            "name": full_name,
+            "total_number_of_dept": total_number_dept,
+            "total_number_of_students": total_number_student,
+            "total_number_of_teachers": total_number_teacher,
+            "total_number_of_staffs": total_number_staffs,
+        },
+    )
 
 
 @login_required(login_url="login")
@@ -81,6 +101,7 @@ def students_view(request):
     student = Student.objects.get(user=request.user)
     return render(request, "students.html", {"student": student})
 
+
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def enrollment_view(request):
@@ -88,10 +109,11 @@ def enrollment_view(request):
     course = Course.objects.all()
     return render(request, "enrollment.html", {"course": course})
 
+
 @login_required(login_url="login")
 def staff_view(request):
-    staff = Staffs.objects.all()
-    return render(request, "staffs.html", {"staff": list(staff)})
+    query_set = Staff.objects.all()
+    return render(request, "staffs.html", {"staffs": list(query_set)})
 
 
 @login_required(login_url="login")
@@ -107,6 +129,7 @@ def department_view(request):
         number_of_teachers=Count("teacher", distinct=True)
     ).annotate(number_of_students=Count("student", distinct=True))
     return render(request, "department.html", {"departments": list(query_set)})
+
 
 @login_required(login_url="login")
 def institute_students_view(request):
@@ -208,22 +231,35 @@ def edit_teachers_profile_view(request):
 @user_passes_test(is_student, login_url="home")
 def results_view(request):
 
-    query_set = Mark.objects.filter(student__user=request.user)
-    total_credits = query_set.aggregate(Sum("course__credit_no"))[
-        "course__credit_no__sum"
-    ]
-    print("total: ", total_credits)
-    marks = list(query_set)
+    query_set = Mark.objects.filter(
+        enrollment__student__user=request.user, is_approved=True
+    )
 
-    sum = Decimal("0.0")
-    for mark in marks:
-        sum = sum + (mark.gpa * mark.course.credit_no)
+    if query_set.exists():
+        total_credits = query_set.aggregate(
+            Sum("enrollment__course__course__credit_no")
+        )["enrollment__course__course__credit_no__sum"]
+        print("total: ", total_credits)
+        marks = list(query_set)
 
-    print(sum)
-    cgpa = sum / total_credits
-    print("cgpa: ", cgpa)
+        sum = Decimal("0.0")
+        for mark in marks:
+            sum = sum + (mark.gpa * mark.enrollment.course.course.credit_no)
+
+        print(sum)
+        cgpa = sum / total_credits
+        print("cgpa: ", cgpa)
+    else:
+        cgpa = Decimal("0.0")
+        total_credits = Decimal("0.0")
     return render(
-        request, "results.html", {"marks": list(query_set), "cgpa": round(cgpa, 2), "completed_credit": round(total_credits,2)}
+        request,
+        "results.html",
+        {
+            "marks": list(query_set),
+            "cgpa": round(cgpa, 2),
+            "completed_credit": round(total_credits, 2),
+        },
     )
 
 
@@ -231,7 +267,7 @@ def results_view(request):
 @user_passes_test(is_teacher, login_url="home")
 def view_results_view(request):
 
-    query_set = Mark.objects.filter(course__teacher__user=request.user)
+    query_set = Mark.objects.filter(enrollment__course__teacher__user=request.user)
 
     return render(request, "view-results.html", {"marks": list(query_set)})
 
@@ -258,17 +294,25 @@ def edit_results_view(request):
 
             try:
                 with transaction.atomic():
-                    mark = Mark()
 
                     registration_no = form.cleaned_data["registration_no"]
                     student = Student.objects.get(registration_no=registration_no)
-                    mark.student = student
 
-                    mark.course = form.cleaned_data["course"]
+                    assignment = form.cleaned_data["course"]
+                    print("hello")
+                    enrollment = Enrollment.objects.filter(
+                        student=student,
+                        course=assignment,
+                        course__year=datetime.datetime.now().year,
+                    ).first()
+
+                    print("hellllllll", enrollment)
+
+                    mark = Mark()
+                    mark.enrollment = enrollment
                     mark.term_test = form.cleaned_data["term_test"]
                     mark.attendance = form.cleaned_data["attendance"]
-                    mark.total_attendence = form.cleaned_data["total_attendence"]
-                    mark.other_assesment = form.cleaned_data["other_assesment"]
+                    mark.total_classes = form.cleaned_data["total_classes"]
                     mark.semester_final = form.cleaned_data["semester_final"]
 
                     mark.save()
@@ -325,95 +369,110 @@ def upload_csv(request, course):
     #     return render(request, "csv_upload.html", data)
     #     # if not GET, then proceed
     try:
-        with transaction.atomic():
-            csv_file = request.FILES["csv_file"]
-            if not csv_file.name.endswith(".csv"):
-                raise TypeError(
-                    "It was probably not a CSV file. Please upload a CSV file"
-                )
-                # messages.error(request, "File is not CSV type")
-                # return HttpResponseRedirect(reverse("csv_upload"))
-                # if file is too large, return
-            if csv_file.multiple_chunks():
-                raise Exception(
-                    "Uploaded file is too big (%.2f MB)."
-                    % (csv_file.size / (1000 * 1000),)
-                )
-                # messages.error(
-                #     request,
-                #     "Uploaded file is too big (%.2f MB)."
-                #     % (csv_file.size / (1000 * 1000),),
-                # )
-                # return HttpResponseRedirect(reverse("csv_upload"))
 
-            file_data = csv_file.read().decode("utf-8")
+        csv_file = request.FILES["csv_file"]
+        if not csv_file.name.endswith(".csv"):
+            raise TypeError("It was probably not a CSV file. Please upload a CSV file")
+            # messages.error(request, "File is not CSV type")
+            # return HttpResponseRedirect(reverse("csv_upload"))
+            # if file is too large, return
+        if csv_file.multiple_chunks():
+            raise Exception(
+                "Uploaded file is too big (%.2f MB)." % (csv_file.size / (1000 * 1000),)
+            )
+            # messages.error(
+            #     request,
+            #     "Uploaded file is too big (%.2f MB)."
+            #     % (csv_file.size / (1000 * 1000),),
+            # )
+            # return HttpResponseRedirect(reverse("csv_upload"))
 
-            lines = file_data.split("\n")
-            # print("debug")
+        file_data = csv_file.read().decode("utf-8")
 
-            index = 0
-            try:
-                for index, line in enumerate(lines):
-                    fields = line.split(",")
-                    mark = Mark()
-                    registration_no = int(fields[0])
-                    print(index)
-                    student = Student.objects.get(registration_no=registration_no)
-                    # print(2)
-                    mark.student = student
-                    # print(3)
-                    # print(4)
-                    mark.course = course
-                    mark.term_test = Decimal(fields[1])
-                    # print(5)
-                    mark.attendance = int(fields[2])
-                    # print(6)
-                    mark.total_attendence = int(fields[3])
-                    # print(7)
-                    mark.other_assesment = Decimal(fields[4])
-                    # print(8)
-                    mark.semester_final = Decimal(fields[5])
-                    # print(9)
-                    mark.save()
-            except ValueError as e:
-                raise ValueError(
-                    "CSV contains data of unexpected type at record no. "
-                    + str(index + 1)
-                    + "."
-                )
+        lines = file_data.split("\n")
+        print(len(lines))
+        # print("debug")
 
-            except IntegrityError as e:
-                raise IntegrityError(
-                    "CSV may be containing duplicate record at row "
-                    + str(index + 1)
-                    + "."
-                )
+        index = 0
+        try:
+            for index, line in enumerate(lines):
+                fields = line.split(",")
 
-            except Exception as e:
-                print(repr(e))
-                raise Exception(
-                    "CSV contains invalid data. Please fix it and try again. Hint: Check record no. "
-                    + str(index + 1)
-                    + "."
-                )
+                registration_no = fields[0]
+                student = Student.objects.get(registration_no=registration_no)
 
-        # loop over the lines and save them in db. If error , store as string and then display
-        # for line in lines:
-        # 	fields = line.split(",")
-        # 	data_dict = {}
-        # 	data_dict["name"] = fields[0]
-        # 	data_dict["start_date_time"] = fields[1]
-        # 	data_dict["end_date_time"] = fields[2]
-        # 	data_dict["notes"] = fields[3]
-        # 	try:
-        # 		form = EventsForm(data_dict)
-        # 		if form.is_valid():
-        # 			form.save()
-        # 		else:
-        # 			logging.getLogger("error_logger").error(form.errors.as_json())
-        # 	except Exception as e:
-        # 		logging.getLogger("error_logger").error(repr(e))
-        # 		pass
+                enrollment = Enrollment.objects.filter(
+                    student=student,
+                    course__course=course,
+                    year=datetime.datetime.now().year,
+                ).first()
+
+                mark = Mark()
+                mark.enrollment = enrollment
+                mark.term_test = Decimal(fields[1])
+                mark.attendance = int(fields[2])
+                mark.total_classes = int(fields[3])
+                mark.semester_final = Decimal(fields[4])
+
+                mark.save()
+
+                # mark = Mark()
+                # registration_no = int(fields[0])
+                # print(index)
+                # student = Student.objects.get(registration_no=registration_no)
+                # # print(2)
+                # mark.student = student
+                # # print(3)
+                # # print(4)
+                # mark.course = course
+                # mark.term_test = Decimal(fields[1])
+                # # print(5)
+                # mark.attendance = int(fields[2])
+                # # print(6)
+                # mark.total_attendence = int(fields[3])
+                # # print(7)
+                # mark.other_assesment = Decimal(fields[4])
+                # # print(8)
+                # mark.semester_final = Decimal(fields[5])
+                # # print(9)
+                # mark.save()
+        except ValueError as e:
+            raise ValueError(
+                "CSV contains data of unexpected type at record no. "
+                + str(index + 1)
+                + "."
+            )
+
+        except IntegrityError as e:
+            raise IntegrityError(
+                "CSV may be containing duplicate record at row " + str(index + 1) + "."
+            )
+
+        except Exception as e:
+            print(repr(e))
+            raise Exception(
+                "CSV contains invalid data. Please fix it and try again. Hint: Check record no. "
+                + str(index + 1)
+                + "."
+            )
+
+    # loop over the lines and save them in db. If error , store as string and then display
+    # for line in lines:
+    # 	fields = line.split(",")
+    # 	data_dict = {}
+    # 	data_dict["name"] = fields[0]
+    # 	data_dict["start_date_time"] = fields[1]
+    # 	data_dict["end_date_time"] = fields[2]
+    # 	data_dict["notes"] = fields[3]
+    # 	try:
+    # 		form = EventsForm(data_dict)
+    # 		if form.is_valid():
+    # 			form.save()
+    # 		else:
+    # 			logging.getLogger("error_logger").error(form.errors.as_json())
+    # 	except Exception as e:
+    # 		logging.getLogger("error_logger").error(repr(e))
+    # 		pass
     except TypeError as e:
         raise TypeError(str(e))
 

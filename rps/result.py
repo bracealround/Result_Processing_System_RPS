@@ -1,7 +1,7 @@
 from decimal import *
 
 # Function for calculating GPA
-def calculate_gpa(mark):
+def calculate_gpa_and_grade(mark):
 
     if mark <= 100 and mark >= 80:
         return Decimal("4.00"), "A+"
