@@ -22,11 +22,11 @@ from django.template.loader import render_to_string
 #Creating a class based view
 class GeneratePdf_view(View):
      def get(self, request, *args, **kwargs):
-        data = Mark.objects.all().order_by('course')
-        open('temp.html', "w").write(render_to_string('results.html', {'data': data}))
+        data = Mark.objects.all()
+        open('temps.html', "w").write(render_to_string('results.html', {'data': data}))
 
         # Converting the HTML template into a PDF file
-        pdf = html_to_pdf('temp.html')
+        pdf = html_to_pdf('temps.html')
          
          # rendering the template
         return HttpResponse(pdf, content_type='application/pdf')
