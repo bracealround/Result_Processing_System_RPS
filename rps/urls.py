@@ -13,14 +13,10 @@ urlpatterns = [
     path("results/upload/csv/", views.upload_csv, name="csv_upload"),
     path("institute/department/", views.department_view, name="department"),
     path("institute/teacher/", views.institute_teacher_view, name="institute_teacher"),
-    path(
-        "students/edit_profile/",
-        views.edit_students_profile_view,
-        name="edit_students_profile",
-    ),
-    path(
-        "teachers/edit_profile/",
-        views.edit_teachers_profile_view,
-        name="edit_teachers_profile",
-    ),
+    path("institute/staff/", views.staff_view, name="institute_staff"),
+    path("institute/students/", views.institute_students_view, name="institute_student"),
+    path("students/edit_profile/", views.edit_students_profile_view, name="edit_students_profile"),
+    path("teachers/edit_profile/", views.edit_teachers_profile_view,name="edit_teachers_profile"),
+    path("studnets/enrollment/", views.enrollment_view,name="enrollment"),
+    path("studnets/downloadpdf/", views.GeneratePdf_view.as_view(),name="download"),
 ]

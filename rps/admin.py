@@ -1,7 +1,16 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
-from .models import Student, Teacher, Department, Course, Assignment, Enrollment, Mark
+from .models import (
+    Staffs,
+    Student,
+    Teacher,
+    Department,
+    Course,
+    Assignment,
+    Enrollment,
+    Mark,
+)
 
 
 class MarkAdmin(admin.ModelAdmin):
@@ -114,6 +123,13 @@ class CourseAdmin(admin.ModelAdmin):
     exclude = ()
 
 
+class StaffAdmin(admin.ModelAdmin):
+
+    list_display = ("first_name", "last_name", "title", "contact_no")
+
+    exclude = ()
+
+
 # Register your models here.
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Teacher, TeacherAdmin)
@@ -122,3 +138,4 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(Enrollment, EnrollmentAdmin)
 admin.site.register(Mark, MarkAdmin)
+admin.site.register(Staffs, StaffAdmin)

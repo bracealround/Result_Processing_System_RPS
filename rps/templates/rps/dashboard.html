@@ -1,53 +1,56 @@
 {% extends "rps/base.html" %}
 
 {% block content %}
-    <div class="row">
-        <a class="card text-white bg-primary mb-3" href="{% url "department" %}" style="max-width: 18rem;">
+    <div class="row mt-3 mx-3">
+        <a class="card text-white bg-primary mb-3 mx-3" href="{% url "department" %}" style="max-width: 18rem;">
         <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header"></div>
+            <div class="card-header"><h4>Total Department: {{total_number_of_dept}}</h4></div>
             <div class="card-body">
-            <h5 class="card-title">Departments</h5>
-            <p class="card-text">Click this card view all the departments of the institution.</p>
-            </div>
-        </div>
-        </a>
-        <a class="card text-white bg-secondary mb-3" href="{% url "institute_teacher" %}" style="max-width: 18rem;">
-        <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
-            <div class="card-header"></div>
-            <div class="card-body">
-            <h5 class="card-title">Teachers Info</h5>
             <p class="card-text">CLick this card to view all the teachers info for this institution.</p>
             </div>
         </div>
         </a>
-        <a class="card text-white bg-success mb-3" href="{% url "institute_teacher" %}" style="max-width: 18rem;">
-        <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
-            <div class="card-header"></div>
+        <a class="card text-white bg-dark mb-3 mx-3" href="{% url "institute_student" %}" style="max-width: 18rem;">
+        <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card-header"><h4>Total Students: {{total_number_of_students}}</h4></div>
             <div class="card-body">
-            <h5 class="card-title">Staff Info</h5>
-            <p class="card-text">Click this card to view all the staff info for this institution.</p>
+              <p class="card-text">CLick this card to view all the students info for this institution.</p>
+            </div>
+          </div>
+        </a>
+        <a class="card text-white bg-secondary mb-3 mx-3" href="{% url "institute_teacher" %}" style="max-width: 18rem;">
+        <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header"><h4>Total Teachers: {{total_number_of_teachers}}</h4></div>
+            <div class="card-body">
+            <p class="card-text">CLick this card to view all the teachers info for this institution.</p>
             </div>
         </div>
         </a>
-        <a class="ard text-white bg-danger mb-3" href="" style="max-width: 18rem;">
-        <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
-            <div class="card-header"></div>
+        <a class="card text-white bg-success mb-3 mx-3" href="{% url "institute_staff" %}" style="max-width: 18rem;">
+        <div class="card text-white bg-success mb-3 border-radius: 20%" style="max-width: 18rem;">
+            <div class="card-header"><h4>Total Staff: {{total_number_of_staffs}}</h4></div>
             <div class="card-body">
-            <h5 class="card-title">Institute Info</h5>
+            <p class="card-text">CLick this card to view all the teachers info for this institution.</p>
+            </div>
+        </div>
+        </a>
+        <a class="ard text-white bg-danger mb-3 mx-3" href="" style="max-width: 18rem;">
+            <div class="card text-white bg-danger mb-3 border-radius: 20%" style="max-width: 18rem;">
+            <div class="card-header"><h4>Institute Info</h4></div>
+            <div class="card-body">
             <p class="card-text">Click this card to view all the university info for this institution.</p>
             </div>
         </div>
         </a>
-        <a class="card text-white bg-warning mb-3" href="" style="max-width: 18rem;">
-        <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-            <div class="card-header"></div>
+        <a class="card text-white bg-warning mb-3 mx-3" href="" style="max-width: 18rem;">
+        <div class="card text-white bg-warning mb-3 border-radius: 50%" style="max-width: 18rem;">
+            <div class="card-header"><h4>Admission Info</h4></div>
             <div class="card-body">
-            <h5 class="card-title">Addmission Info</h5>
             <p class="card-text">Here is all the admission info for the Institute</p>
             </div>
         </div>
         </a>
-        <a class="card text-white bg-info mb-3" href="" style="max-width: 18rem;">
+        <a class="card text-white bg-info mb-3 mx-3" href="" style="max-width: 18rem;">
         <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
             <div class="card-header"></div>
             <div class="card-body">

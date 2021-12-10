@@ -45,6 +45,16 @@ class Teacher(models.Model):
     def __str__(self):
         return str(self.first_name) + " " + str(self.last_name)
 
+class Staffs(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    title = models.CharField(max_length=50)
+    contact_no = models.IntegerField()
+
+    def __str__(self):
+        return str(self.first_name) + " " + str(self.last_name)
+
 
 # Course table (ManyToMany relation to be built with Students)
 class Course(models.Model):
