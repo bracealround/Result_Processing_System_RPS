@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import (
-    Staffs,
+    Staff,
     Student,
     Teacher,
     Department,
@@ -138,4 +138,4 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(Enrollment, EnrollmentAdmin)
 admin.site.register(Mark, MarkAdmin)
-admin.site.register(Staffs, StaffAdmin)
+admin.site.register(Staff, StaffAdmin)

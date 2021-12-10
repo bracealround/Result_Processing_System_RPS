@@ -43,9 +43,17 @@ class Teacher(models.Model):
     title = models.CharField(max_length=50)
 
     def __str__(self):
-        return str(self.first_name) + " " + str(self.last_name)
+        return (
+            str(self.first_name)
+            + " "
+            + str(self.last_name)
+            + " ( "
+            + str(self.department.dept_code)
+            + " )"
+        )
 
-class Staffs(models.Model):
+
+class Staff(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

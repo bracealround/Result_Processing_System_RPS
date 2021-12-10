@@ -8,35 +8,28 @@ from django.db import transaction, IntegrityError
 from django.db.models import Count, Sum, Value
 from django.db.models.functions import Concat
 from decimal import Decimal
-<<<<<<< HEAD
 import logging, datetime
 from rps import models
-from rps.models import Course, Department, Mark, Staffs, Student, Teacher, Enrollment
-=======
-import logging
-from rps import models
-from rps.models import Course, Department, Mark, Staffs, Student, Teacher
->>>>>>> origin/main
+from rps.models import Course, Department, Mark, Staff, Student, Teacher, Enrollment
 from .forms import individual_resultForm, upload_csv_form, edit_profile
 from django.http import HttpResponse
 from django.views.generic import View
 from django.template.loader import get_template
-from .utils import html_to_pdf #created in step 4
+from .utils import html_to_pdf  # created in step 4
 import datetime
 from django.template.loader import render_to_string
 
-#Creating a class based view
+# Creating a class based view
 class GeneratePdf_view(View):
-     def get(self, request, *args, **kwargs):
-        data = Mark.objects.all().order_by('course')
-        open('temp.html', "w").write(render_to_string('results.html', {'data': data}))
+    def get(self, request, *args, **kwargs):
+        data = Mark.objects.all().order_by("enrollment__course__course")
+        open("temp.html", "w").write(render_to_string("results.html", {"data": data}))
 
         # Converting the HTML template into a PDF file
-        pdf = html_to_pdf('temp.html')
-         
-         # rendering the template
-        return HttpResponse(pdf, content_type='application/pdf')
+        pdf = html_to_pdf("temp.html")
 
+        # rendering the template
+        return HttpResponse(pdf, content_type="application/pdf")
 
 
 # Function for checking whether user is a student or not
@@ -59,12 +52,12 @@ def is_teacher(user):
 @login_required(login_url="login")
 def home_view(request):
 
-    if request.user.is_teacher:
+    if request.user.is_teacher and Teacher.objects.filter(user=request.user).exists():
         first_name = Teacher.objects.get(user=request.user).first_name
         last_name = Teacher.objects.get(user=request.user).last_name
         full_name = first_name + " " + last_name
 
-    elif request.user.is_student:
+    elif request.user.is_student and Student.objects.filter(user=request.user).exists():
         first_name = Student.objects.get(user=request.user).first_name
         last_name = Student.objects.get(user=request.user).last_name
         full_name = first_name + " " + last_name
@@ -75,9 +68,18 @@ def home_view(request):
     total_number_dept = Department.objects.all().count()
     total_number_student = Student.objects.all().count()
     total_number_teacher = Teacher.objects.all().count()
-    total_number_staff = Staffs.objects.all().count()
-    return render(request, "dashboard.html", {"name": full_name, "total_number_of_dept": total_number_dept, "total_number_of_students":total_number_student, 
-    "total_number_of_teachers": total_number_teacher, "total_number_of_staffs": total_number_staff})
+    total_number_staffs = Staff.objects.all().count()
+    return render(
+        request,
+        "dashboard.html",
+        {
+            "name": full_name,
+            "total_number_of_dept": total_number_dept,
+            "total_number_of_students": total_number_student,
+            "total_number_of_teachers": total_number_teacher,
+            "total_number_of_staffs": total_number_staffs,
+        },
+    )
 
 
 @login_required(login_url="login")
@@ -87,6 +89,7 @@ def students_view(request):
     student = Student.objects.get(user=request.user)
     return render(request, "students.html", {"student": student})
 
+
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def enrollment_view(request):
@@ -94,10 +97,11 @@ def enrollment_view(request):
     course = Course.objects.all()
     return render(request, "enrollment.html", {"course": course})
 
+
 @login_required(login_url="login")
 def staff_view(request):
-    staff = Staffs.objects.all()
-    return render(request, "staffs.html", {"staff": list(staff)})
+    query_set = Staff.objects.all()
+    return render(request, "staffs.html", {"staffs": list(query_set)})
 
 
 @login_required(login_url="login")
@@ -113,6 +117,7 @@ def department_view(request):
         number_of_teachers=Count("teacher", distinct=True)
     ).annotate(number_of_students=Count("student", distinct=True))
     return render(request, "department.html", {"departments": list(query_set)})
+
 
 @login_required(login_url="login")
 def institute_students_view(request):
@@ -233,9 +238,16 @@ def results_view(request):
         cgpa = sum / total_credits
         print("cgpa: ", cgpa)
     else:
-        cgpa = 0
+        cgpa = Decimal("0.0")
+        total_credits = Decimal("0.0")
     return render(
-        request, "results.html", {"marks": list(query_set), "cgpa": round(cgpa, 2), "completed_credit": round(total_credits,2)}
+        request,
+        "results.html",
+        {
+            "marks": list(query_set),
+            "cgpa": round(cgpa, 2),
+            "completed_credit": round(total_credits, 2),
+        },
     )
 
 
