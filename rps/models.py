@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import gettext as _
 from decimal import *
-from rps.result import calculate_gpa
+from rps.result import calculate_gpa_and_grade
 
 # Create your models here.
 # Department table
@@ -48,44 +48,80 @@ class Teacher(models.Model):
 
 # Course table (ManyToMany relation to be built with Students)
 class Course(models.Model):
-    course_code = models.CharField(primary_key=True, max_length=20)
+    course_code = models.CharField(unique=True, max_length=20)
     course_name = models.CharField(max_length=50)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    semester = models.IntegerField()
     credit_no = models.DecimalField(max_digits=20, decimal_places=2)
-    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return str(self.course_code)
+
+
+# Assignment of a teacher to a course in a particular year
+class Assignment(models.Model):
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    semester = models.IntegerField()
+    year = models.IntegerField()
+
+    def __str__(self):
+        return str(self.course) + " for " + str(self.department.dept_code)
+
+    class Meta:
+        unique_together = (("department", "course", "semester", "year"),)
+
+
+# Enrollment
+class Enrollment(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return (
-            str(self.course_name)
-            + " ( "
-            + str(self.course_code)
-            + " )"
-            + str(self.department)
+            str(self.student.registration_no)
+            + "-"
+            + str(self.course.course.course_code)
+            + " by "
+            + str(self.course.teacher)
         )
 
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+
+        # save original values, when model is loaded from database,
+        # in a separate attribute on the model
+        instance._loaded_values = dict(zip(field_names, values))
+
+        return instance
+
+    def save(self, *args, **kwargs):
+
+        if not self._state.adding and (
+            self._loaded_values["is_approved"] == True and self.is_approved == False
+        ):
+            print('"is_approved" cannot be set to False once set to True.')
+            self.is_approved = True
+
+        super().save(*args, **kwargs)
+
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["course_code", "department", "semester"],
-                name="unique_subject",
-            )
-        ]
-        ordering = ["department", "semester", "course_code"]
+        unique_together = (("student", "course"),)
 
 
 # Mark table
 class Mark(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    enrollment = models.OneToOneField(Enrollment, on_delete=models.CASCADE)
     term_test = models.DecimalField(max_digits=20, decimal_places=2)
     attendance = models.IntegerField(default=0)
-    total_attendence = models.IntegerField(default=0)
-    other_assesment = models.DecimalField(max_digits=20, decimal_places=2)
+    total_classes = models.IntegerField(default=0)
     semester_final = models.DecimalField(max_digits=20, decimal_places=2)
     final_result = models.DecimalField(max_digits=20, decimal_places=2)
     gpa = models.DecimalField(max_digits=3, decimal_places=2, null=True)
     grade = models.CharField(max_length=2, null=True)
+    is_approved = models.BooleanField(default=False)
 
     @property
     def final_result(self):
@@ -94,9 +130,8 @@ class Mark(models.Model):
                 Decimal(
                     (
                         self.term_test
-                        + Decimal((self.attendance / self.total_attendence) * 10)
-                        + self.other_assesment
-                        + (self.semester_final) * Decimal("0.6")
+                        + Decimal((self.attendance / self.total_classes) * 10)
+                        + (self.semester_final) * Decimal("0.7")
                     )
                 )
                 / Decimal("0.5")
@@ -107,14 +142,28 @@ class Mark(models.Model):
         return final_result
 
     def __str__(self):
-        return str(self.student) + " ( " + str(self.course) + " )"
+        return str(self.enrollment.student) + " ( " + str(self.enrollment.course) + " )"
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+
+        # save original values, when model is loaded from database,
+        # in a separate attribute on the model
+        instance._loaded_values = dict(zip(field_names, values))
+
+        return instance
 
     def save(self, *args, **kwargs):
-        self.gpa, self.grade = calculate_gpa(self.final_result)
-        super().save(*args, **kwargs)
+        self.gpa, self.grade = calculate_gpa_and_grade(self.final_result)
 
-    class Meta:
-        unique_together = (("student", "course"),)
+        if not self._state.adding and (
+            self._loaded_values["is_approved"] == True and self.is_approved == False
+        ):
+            print('"is_approved" cannot be set to False once set to True.')
+            self.is_approved = True
+
+        super().save(*args, **kwargs)
 
 
 # # result table

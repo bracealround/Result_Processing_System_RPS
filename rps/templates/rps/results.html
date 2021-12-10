@@ -16,9 +16,9 @@
                         <th>Course Title</th>
                         <th>Semester</th>
                         <th>Credit</th>
-                        <th>GPA</th>
-                        <th>Grade</th>
                         <th>Final Mark</th>
+                        <th>Grade</th>
+                        <th>GPA</th>
                     </tr>
                 </thead>
 
@@ -35,13 +35,13 @@
                 <tbody>
                     {% for mark in marks %}
                         <tr>
-                            <td> {{mark.course.course_code}} </td>
-                            <td> {{mark.course.course_name}} </td>
-                            <td> {{mark.course.semester}} </td>
-                            <td> {{mark.course.credit_no}} </td>
-                            <td> {{mark.gpa}} </td>
-                            <td> {{mark.grade}} </td>
+                            <td> {{mark.enrollment.course.course.course_code}} </td>
+                            <td> {{mark.enrollment.course.course.course_name}} </td>
+                            <td> {{mark.enrollment.course.semester}} </td>
+                            <td> {{mark.enrollment.course.course.credit_no}} </td>
                             <td> {{mark.final_result}} </td>
+                            <td> {{mark.grade}} </td>
+                            <td> {{mark.gpa}} </td>
                         </tr>
                     {% endfor %}
 
