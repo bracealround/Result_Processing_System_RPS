@@ -1,35 +1,40 @@
 {% extends "rps/base.html" %}
 
 {% block content %}
-    <div class="container rounded bg-white mt-5 mb-5">
-        <div class="row">
-            <div class="card col-md-3 border-right">
-                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="{{user.student.image.url}}"><span class="font-weight-bold">Registration_No: {{student.registration_no}}</span><span class="text-black-50">{{ user.email }}</span><span> </span></div>
-            </div>
-            <div class="card col-md-5 border-right">
-                <div class="p-3 py-5">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="text-right">Students Profile</h4>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-md-6"><label class="labels">First Name:   </label>{{student.first_name}}</div>
-                        <div class="col-md-6"><label class="labels">Last Name:    </label>{{student.last_name}}</div>
-                    </div>
-                    <div card class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Registration No: </label>{{student.registration_no}}</div>
-                        <div class="col-md-12"><label class="labels">Email: </label>{{user.email}}</div>
-                        <div class="col-md-12"><label class="labels">Department: </label>{{student.department}}</div>
-                        <div class="col-md-12"><label class="labels">Session: </label>{{student.session}}</div>
-                    </div>
-                    <form action="{% url "edit_students_profile" %}" method="GET">
-                        <div class="mt-5 text-right">
-                            <button class="btn btn-primary profile-button" type="submit">Edit Profile</button>
-                        </div>
-                    </form>
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="card col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5"
+                    width="150px"
+                    src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
+                    class="font-weight-bold">Registration_No: {{student.registration_no}}</span><span
+                    class="text-black-50">{{ user.email }}</span><span> </span></div>
+        </div>
+        <div class="card col-md-5 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Students Profile</h4>
                 </div>
+                <div class="row mt-2">
+                    <div class="col-md-6"><label class="labels">First Name: </label>{{student.first_name}}</div>
+                    <div class="col-md-6"><label class="labels">Last Name: </label>{{student.last_name}}</div>
+                </div>
+                <div card class="row mt-3">
+                    <div class="col-md-12"><label class="labels">Registration No: </label>{{student.registration_no}}
+                    </div>
+                    <div class="col-md-12"><label class="labels">Email: </label>{{user.email}}</div>
+                    <div class="col-md-12"><label class="labels">Department: </label>{{student.department}}</div>
+                    <div class="col-md-12"><label class="labels">Session: </label>{{student.session}}</div>
+                </div>
+                <form action="{% url " edit_students_profile" %}" method="GET">
+                    <div class="mt-5 text-right">
+                        <button class="btn btn-primary profile-button" type="submit">Edit Profile</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    </div>
-    </div>
+</div>
+</div>
+</div>
 {% endblock %}

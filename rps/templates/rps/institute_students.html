@@ -3,22 +3,22 @@
 
 {% block content %}
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            DataTable Example
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped" id="datatablesSimple">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Registration No</th>
-                        <th>Students Name</th>
-                        <th>Department </th>
-                        <th>Session</th>
-                    </tr>
-                </thead>
-                <!-- <tfoot>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        DataTable Example
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="datatablesSimple">
+            <thead class="table-dark">
+                <tr>
+                    <th>Registration No</th>
+                    <th>Students Name</th>
+                    <th>Department </th>
+                    <th>Session</th>
+                </tr>
+            </thead>
+            <!-- <tfoot>
                     <tr>
                         <th>Name</th>
                         <th>Position</th>
@@ -28,30 +28,30 @@
                         <th>Salary</th>
                     </tr>
                 </tfoot> -->
-                <tbody>
+            <tbody>
 
-                    {% for student in ins_student %}
-                        <tr>
-                            <td> {{student.registration_no}} </td>
-                            <td> {{student.first_name}} {{ student.last_name}} </td>
-                            <td> {{student.department}} </td>
-                            <td> {{student.session}} </td>
-                            
-                        </tr>
-                    {% endfor %}
-                    
-                </tbody>
-            </table>
-        </div>
+                {% for student in ins_student %}
+                <tr>
+                    <td> {{student.registration_no}} </td>
+                    <td> {{student.first_name}} {{ student.last_name}} </td>
+                    <td> {{student.department}} </td>
+                    <td> {{student.session}} </td>
+
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
     </div>
-    
-    {% load static %}
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script>
-        const datatablesSimple = document.getElementById('datatablesSimple');
-        if (datatablesSimple) {
-            new simpleDatatables.DataTable(datatablesSimple);
-        }
-    </script>
-    
+</div>
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script>
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
+</script>
+
 {% endblock %}

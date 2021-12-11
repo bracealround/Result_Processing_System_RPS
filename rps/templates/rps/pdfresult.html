@@ -24,15 +24,15 @@
         </tfoot> -->
         <tbody>
             {% for mark in marks %}
-                <tr>
-                    <td> {{mark.enrollment.course.course.course_code}} </td>
-                    <td> {{mark.enrollment.course.course.course_name}} </td>
-                    <td> {{mark.enrollment.course.semester}} </td>
-                    <td> {{mark.enrollment.course.course.credit_no}} </td>
-                    <td> {{mark.final_result}} </td>
-                    <td> {{mark.grade}} </td>
-                    <td> {{mark.gpa}} </td>
-                </tr>
+            <tr>
+                <td> {{mark.enrollment.course.course.course_code}} </td>
+                <td> {{mark.enrollment.course.course.course_name}} </td>
+                <td> {{mark.enrollment.course.semester}} </td>
+                <td> {{mark.enrollment.course.course.credit_no}} </td>
+                <td> {{mark.final_result}} </td>
+                <td> {{mark.grade}} </td>
+                <td> {{mark.gpa}} </td>
+            </tr>
             {% endfor %}
 
             <tr>
@@ -44,10 +44,10 @@
                 <th>CGPA</th>
                 <th>{{cgpa}}</th>
             </tr>
-            
+
         </tbody>
     </table>
-</div>	
+</div>
 {% for d in data %}
-    <h1 style="color:red">Registration No: {{ d }} </h1>
+<h1 style="color:red">Registration No: {{ d }} </h1>
 {% endfor %}

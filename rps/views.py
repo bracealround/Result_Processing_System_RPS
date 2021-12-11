@@ -20,7 +20,7 @@ from rps.models import (
     Enrollment,
     Assignment,
 )
-from .forms import individual_resultForm, upload_csv_form, edit_profile
+from .forms import individual_resultForm, upload_csv_form, edit_profile, select_semester
 from django.http import HttpResponse
 from django.views.generic import View
 from django.template.loader import get_template
@@ -261,6 +261,17 @@ def results_view(request):
         enrollment__student__user=request.user, is_approved=True
     )
 
+    if request.method == "POST":
+        form = select_semester(request.POST)
+
+        if form.is_valid():
+            semester = form.cleaned_data["semester"]
+            print(semester)
+            if semester != 0:
+                query_set = query_set.filter(enrollment__course__semester=semester)
+    else:
+        form = select_semester()
+
     if query_set.exists():
         total_credits = query_set.aggregate(
             Sum("enrollment__course__course__credit_no")
@@ -282,6 +293,7 @@ def results_view(request):
         request,
         "results.html",
         {
+            "form": form,
             "marks": list(query_set),
             "cgpa": round(cgpa, 2),
             "completed_credit": round(total_credits, 2),
