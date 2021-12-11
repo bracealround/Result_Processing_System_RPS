@@ -86,7 +86,7 @@ class Assignment(models.Model):
     year = models.IntegerField()
 
     def __str__(self):
-        return str(self.course) + " for " + str(self.department.dept_code)
+        return str(self.course) + "(" + str(self.department.dept_code) + ")"
 
     class Meta:
         unique_together = (("department", "course", "semester", "year"),)

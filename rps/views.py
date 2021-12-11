@@ -116,7 +116,7 @@ def enrollment_view(request):
     # student = Student.objects.get(user=request.user)
     query_set = Assignment.objects.filter(department=request.user.student.department)
     total_courses =query_set.filter().count()
-    total_courses_enrolled =query_set.filter().count()
+    total_courses_enrolled =Enrollment.objects.filter(student=request.user.student).count()
     total_number_teacher = Teacher.objects.all().count()
     total_number_staffs = Staff.objects.all().count()
     return render(request, "enrollment.html", {"courses": list(query_set), "total_available_courses": total_courses,
@@ -126,14 +126,17 @@ def enrollment_view(request):
 @user_passes_test(is_student, login_url="home")
 def ranklist_view(request):
     # student = Student.objects.get(user=request.user)
-    query_set = Assignment.objects.filter(department=request.user.student.department)
+    query_set = Enrollment.objects.filter(student=request.user.student)
+    print(query_set)
     total_courses =query_set.filter().count()
-    total_courses_enrolled =query_set.filter().count()
-    courses = []
+    total_courses_enrolled =0
+    courses_enrolled = []
     for course in query_set:
-        courses.append(hasattr(course, 'enrollment'))
-    return render(request, "enrollment.html", {"courses": list(query_set), "total_available_courses": total_courses,
-     "courses_enrolled": total_courses_enrolled, "courses": courses})
+        courses_enrolled.append(hasattr(course, 'enrollment'))
+        if(hasattr(course, 'enrollment')):
+            total_courses_enrolled+=1
+    return render(request, "ranklist.html", {"courses": list(query_set), "total_available_courses": total_courses,
+     "courses_enrolled": total_courses_enrolled, "courses_enrolled": courses_enrolled})
 
 
 @login_required(login_url="login")
