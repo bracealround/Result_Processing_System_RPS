@@ -38,11 +38,33 @@ class GeneratePdf_view(View):
         #     render_to_string("rps/results.html", {"data": data})
         # )
 
-        query_set = Assignment.objects.filter(
-            department=request.user.student.department
-        )
+        query_set = Mark.objects.filter(
+        enrollment__student__user=request.user, is_approved=True
+    )
+        if query_set.exists():
+            total_credits = query_set.aggregate(
+                Sum("enrollment__course__course__credit_no")
+            )["enrollment__course__course__credit_no__sum"]
+            print("total: ", total_credits)
+            marks = list(query_set)
 
-        d = {"data": list(query_set)}
+            sum = Decimal("0.0")
+            for mark in marks:
+                sum = sum + (mark.gpa * mark.enrollment.course.course.credit_no)
+
+            print(sum)
+            cgpa = sum / total_credits
+            print("cgpa: ", cgpa)
+        else:
+            cgpa = Decimal("0.0")
+            total_credits = Decimal("0.0")
+
+        registration_no = Student.objects.get(user=request.user).registration_no
+        department = Student.objects.get(user=request.user).department
+        session = Student.objects.get(user=request.user).session
+
+
+        d = {"data": list(query_set), "cgpa": cgpa,"registration_no": registration_no,"department":department, "session":session}
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
         # Converting the HTML template into a PDF file
@@ -117,8 +139,6 @@ def enrollment_view(request):
     query_set = Assignment.objects.filter(department=request.user.student.department)
     total_courses =query_set.filter().count()
     total_courses_enrolled =Enrollment.objects.filter(student=request.user.student).count()
-    total_number_teacher = Teacher.objects.all().count()
-    total_number_staffs = Staff.objects.all().count()
     return render(request, "enrollment.html", {"courses": list(query_set), "total_available_courses": total_courses,
      "courses_enrolled": total_courses_enrolled})
 

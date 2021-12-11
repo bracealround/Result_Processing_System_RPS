@@ -56,13 +56,14 @@
                         <td> {{course.course.course_code}} </td> </td>
                         <td> {{course.course.course_name}} </td>
                         <td> {{course.course.credit_no}} </td>
-                        {% if course.is_approved == "True" %}
+                        {% if enrollment.course == "True" %}
                             <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a></td>
                         {% else %}
                             <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enroll Now</a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
+
 
             </tbody>
         </table>
