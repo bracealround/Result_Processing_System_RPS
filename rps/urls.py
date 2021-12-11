@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 from . import views
 
 
@@ -19,4 +21,4 @@ urlpatterns = [
     path("teachers/edit_profile/", views.edit_teachers_profile_view,name="edit_teachers_profile"),
     path("studnets/enrollment/", views.enrollment_view,name="enrollment"),
     path("studnets/downloadpdf/", views.GeneratePdf_view.as_view(),name="download"),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
