@@ -50,3 +50,26 @@ class edit_profile(forms.Form):
         self.fields["last_name"].widget = forms.TextInput(
             attrs={"class": "col-md-6", "placeholder": self.last_name}
         )
+
+
+class select_semester(forms.Form):
+
+    SEMESTER_CHOICES = (
+        (0, "All"),
+        (1, "1st year 1st semester"),
+        (2, "1st year 2nd semester"),
+        (3, "2nd year 1st semester"),
+        (4, "2nd year 2nd semester"),
+        (5, "3rd year 1st semester"),
+        (6, "3rd year 2nd semester"),
+        (7, "4th year 1st semester"),
+        (8, "4th year 2nd semester"),
+    )
+
+    semester = forms.ChoiceField(
+        choices=SEMESTER_CHOICES,
+        label="",
+        initial="All",
+        widget=forms.Select(),
+        required=False,
+    )

@@ -3,50 +3,50 @@
 
 {% block content %}
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            View all the results prepared by you:
-        </div>
-        <div class="card-body mt-3">
-            <table class="table table-bordered table-striped" id="datatablesSimple">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Registration No.</th>
-                        <th>Course Code</th>
-                        <th>Course Title</th>
-                        <th>Credit</th>
-                        <th>Final Mark</th>
-                        <th>GPA</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for mark in marks %}
-                        <tr>
-                            <td> {{mark.enrollment.student.registration_no}} </td>
-                            <td> {{mark.enrollment.course.course.course_code}} </td>
-                            <td> {{mark.enrollment.course.course.course_name}} </td>
-                            <td> {{mark.enrollment.course.course.credit_no}} </td>
-                            <td> {{mark.final_result}} </td>
-                            <td> {{mark.gpa}} </td>
-                            <td> {{mark.grade}} </td>
-                        </tr>
-                    {% endfor %}
-                    
-                </tbody>
-            </table>
-        </div>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        View all the results prepared by you:
     </div>
-    
-    {% load static %}
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script>
-        const datatablesSimple = document.getElementById('datatablesSimple');
-        if (datatablesSimple) {
-            new simpleDatatables.DataTable(datatablesSimple);
-        }
-    </script>
-    
+    <div class="card-body mt-3">
+        <table class="table table-bordered table-striped" id="datatablesSimple">
+            <thead class="table-dark">
+                <tr>
+                    <th>Registration No.</th>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>Credit</th>
+                    <th>Final Mark</th>
+                    <th>GPA</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for mark in marks %}
+                <tr>
+                    <td> {{mark.enrollment.student.registration_no}} </td>
+                    <td> {{mark.enrollment.course.course.course_code}} </td>
+                    <td> {{mark.enrollment.course.course.course_name}} </td>
+                    <td> {{mark.enrollment.course.course.credit_no}} </td>
+                    <td> {{mark.final_result}} </td>
+                    <td> {{mark.gpa}} </td>
+                    <td> {{mark.grade}} </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script>
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
+</script>
+
 {% endblock %}

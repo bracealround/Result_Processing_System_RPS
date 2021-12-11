@@ -3,22 +3,22 @@
 
 {% block content %}
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            DataTable Example
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped" id="datatablesSimple">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Department Code</th>
-                        <th>Department Name</th>
-                        <th>Number of Teachers</th>
-                        <th>Number of Students</th>
-                    </tr>
-                </thead>
-                <!-- <tfoot>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        DataTable Example
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="datatablesSimple">
+            <thead class="table-dark">
+                <tr>
+                    <th>Department Code</th>
+                    <th>Department Name</th>
+                    <th>Number of Teachers</th>
+                    <th>Number of Students</th>
+                </tr>
+            </thead>
+            <!-- <tfoot>
                     <tr>
                         <th>Name</th>
                         <th>Position</th>
@@ -28,28 +28,28 @@
                         <th>Salary</th>
                     </tr>
                 </tfoot> -->
-                <tbody>
+            <tbody>
 
-                    {% for dep in departments %}
-                        <tr>
-                            <td> {{dep.dept_code}} </td>
-                            <td> {{dep.dept_name}} </td>
-                            <td> {{dep.number_of_teachers}} </td>
-                            <td> {{dep.number_of_students}} </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                {% for dep in departments %}
+                <tr>
+                    <td> {{dep.dept_code}} </td>
+                    <td> {{dep.dept_name}} </td>
+                    <td> {{dep.number_of_teachers}} </td>
+                    <td> {{dep.number_of_students}} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    
-    {% load static %}
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script>
-        const datatablesSimple = document.getElementById('datatablesSimple');
-        if (datatablesSimple) {
-            new simpleDatatables.DataTable(datatablesSimple);
-        }
-    </script>
-    
+</div>
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script>
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
+</script>
+
 {% endblock %}

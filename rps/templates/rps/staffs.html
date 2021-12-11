@@ -3,21 +3,21 @@
 
 {% block content %}
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            DataTable Example
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped" id="datatablesSimple">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Designation</th>
-                        <th>Contact No.</th>
-                    </tr>
-                </thead>
-                <!-- <tfoot>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        DataTable Example
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="datatablesSimple">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Contact No.</th>
+                </tr>
+            </thead>
+            <!-- <tfoot>
                     <tr>
                         <th>Name</th>
                         <th>Position</th>
@@ -27,28 +27,28 @@
                         <th>Salary</th>
                     </tr>
                 </tfoot> -->
-                <tbody>
+            <tbody>
 
-                    {% for sta in staffs %}
-                        <tr>
-                            <td> {{sta.first_name}} {{ sta.last_name}} </td>
-                            <td> {{sta.title}} </td>
-                            <td> {{sta.contact_no}} </td>
-                        </tr>
-                    {% endfor %}
-                    
-                </tbody>
-            </table>
-        </div>
+                {% for sta in staffs %}
+                <tr>
+                    <td> {{sta.first_name}} {{ sta.last_name}} </td>
+                    <td> {{sta.title}} </td>
+                    <td> {{sta.contact_no}} </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
     </div>
-    
-    {% load static %}
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script>
-        const datatablesSimple = document.getElementById('datatablesSimple');
-        if (datatablesSimple) {
-            new simpleDatatables.DataTable(datatablesSimple);
-        }
-    </script>
-    
+</div>
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script>
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
+</script>
+
 {% endblock %}
