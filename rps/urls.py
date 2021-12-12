@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 
@@ -18,5 +19,6 @@ urlpatterns = [
     path("students/edit_profile/", views.edit_students_profile_view, name="edit_students_profile"),
     path("teachers/edit_profile/", views.edit_teachers_profile_view,name="edit_teachers_profile"),
     path("studnets/enrollment/", views.enrollment_view,name="enrollment"),
+    path("studnets/ranklist/", views.ranklist_view,name="ranklist"),
     path("studnets/downloadpdf/", views.GeneratePdf_view.as_view(),name="download"),
 ]

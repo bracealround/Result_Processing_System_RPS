@@ -77,7 +77,7 @@
                             Go
                         </button> -->
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">GO</button>
+                        <button class="btn btn-primary" type="submit">Search</button>
                     </div>
                 </div>
 
@@ -130,13 +130,6 @@
                     <th>CGPA</th>
                     <th>{{cgpa}}</th>
                 </tr>
-
-                {% for course in enrolled_courses %}
-                <tr>
-                    <td> {{course.course.course_code}} </td>
-                    <td> {{course.is_approved}} </td>
-                </tr>
-                {% endfor %}
 
             </tbody>
         </table>

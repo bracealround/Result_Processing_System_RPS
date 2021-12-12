@@ -3,60 +3,33 @@
 
 {% block content %}
 
-<div class="row mt-3 mx-3">
-    <div class="card text-white bg-primary mb-3 mx-3 " style="max-width: 30rem;">
-        <div class="card-header">
-            <h4>Total Courses: </h4>
-        </div>
-        <div class="card-body"></div>
-    </div>
-    <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
-        <div class="card-header">
-            <h4>Courses Enrolled: </h4>
-        </div>
-        <div class="card-body">
-        </div>
-    </div>
-</div>
-<div class="row mx-3">
-    <div class="card text-white bg-success mb-3 mx-3" style="max-width: 30rem;">
-        <div class="card-header">
-            <h4>Pending Approval: </h4>
-        </div>
-        <div class="card-body">
-        </div>
-    </div>
-</div>
-
 <div class="card mb-4">
     <div class="card-header">
         <i class="fas fa-table me-1"></i>
-        Enrolled Courses:
     </div>
     <div class="card-body mt-3">
         <table class="table table-bordered table-striped" id="datatablesSimple">
             <thead class="table-dark">
                 <tr>
-                    <th>Course Code</th>
-                    <th>Course Title</th>
-                    <th>Enrollment Status</th>
+                    <th>Course(Department)</th>
+                    <th>View Ranklist</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for crs in course %}
-                <tr>
-                    <td> {{crs.course_code}} </td>
-                    <td> {{crs.course_name}} </td>
-                    <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enroll Now</a>
-                    </td>
-                </tr>
+                {% for crs in courses %}
+                    <tr>
+                        <td> {{crs.course}} </td>
+                        <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">View Ranklist</a></td>
+                    </tr>
                 {% endfor %}
-
+                
             </tbody>
         </table>
     </div>
 </div>
+
+<a href="#" class="btn btn-primary active" role="button" aria-pressed="true">View Total Ranklist</a>
 
 {% load static %}
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>

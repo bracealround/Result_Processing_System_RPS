@@ -18,6 +18,7 @@ class Department(models.Model):
 # Student table (ManyToMany relation to be built with Course)
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     registration_no = models.IntegerField(unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=50)
@@ -37,6 +38,7 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -84,7 +86,7 @@ class Assignment(models.Model):
     year = models.IntegerField()
 
     def __str__(self):
-        return str(self.course) + " for " + str(self.department.dept_code)
+        return str(self.course) + "(" + str(self.department.dept_code) + ")"
 
     class Meta:
         unique_together = (("department", "course", "semester", "year"),)
