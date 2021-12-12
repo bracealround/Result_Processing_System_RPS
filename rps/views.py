@@ -19,6 +19,7 @@ from rps.models import (
     Teacher,
     Enrollment,
     Assignment,
+    pdfupload,
 )
 from .forms import individual_resultForm, upload_csv_form, edit_profile, select_semester
 from django.http import HttpResponse
@@ -195,6 +196,14 @@ def institute_students_view(request):
 def institute_teacher_view(request):
     teacher = Teacher.objects.all()
     return render(request, "institute_teachers.html", {"ins_teacher": list(teacher)})
+
+
+@login_required(login_url="login")
+def notice_board_view(request):
+    pdf = pdfupload.objects.all()
+    for p in list(pdf):
+        print(p)
+    return render(request, "noticeboard.html", {"pdf": list(pdf)})
 
 
 @login_required(login_url="login")

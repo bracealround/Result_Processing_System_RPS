@@ -185,6 +185,9 @@ class Mark(models.Model):
 
         super().save(*args, **kwargs)
 
+class pdfupload(models.Model):
+    pdf = models.FileField(upload_to='media')
+
 
 # # result table
 # class result(models.Model):
