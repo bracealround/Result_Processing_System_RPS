@@ -131,6 +131,13 @@
                     <th>{{cgpa}}</th>
                 </tr>
 
+                {% for course in enrolled_courses %}
+                <tr>
+                    <td> {{course.course.course_code}} </td>
+                    <td> {{course.is_approved}} </td>
+                </tr>
+                {% endfor %}
+
             </tbody>
         </table>
     </div>

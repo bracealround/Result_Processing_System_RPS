@@ -1,3 +1,4 @@
+from django.db.models.expressions import Exists, OuterRef
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -115,7 +116,14 @@ def students_view(request):
 def enrollment_view(request):
     # student = Student.objects.get(user=request.user)
     query_set = Assignment.objects.filter(department=request.user.student.department)
-    return render(request, "enrollment.html", {"courses": list(query_set)})
+    enrolled_courses = query_set.filter(
+        Exists(Enrollment.objects.filter(course=OuterRef("pk")))
+    )
+    return render(
+        request,
+        "enrollment.html",
+        {"courses": list(query_set), "enrolled_courses": enrolled_courses},
+    )
 
 
 @login_required(login_url="login")
