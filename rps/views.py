@@ -132,6 +132,11 @@ def home_view(request):
 
 
 @login_required(login_url="login")
+def institute_info_view(request):
+    return render(request, "institute_info.html", {})
+
+
+@login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def students_view(request):
     # student = Student.objects.get(user=request.user)

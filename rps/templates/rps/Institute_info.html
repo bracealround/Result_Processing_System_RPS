@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Page Title</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+/* Style the header */
+.header {
+  padding: 80px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+}
+
+/* Increase the font size of the h1 element */
+.header h1 {
+  font-size: 40px;
+}
+
+/* Style the top navigation bar */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+}
+
+
+/* Column container */
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Main column */
+.main {   
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+
+/* Fake image, just for this example */
+.fakeimg {
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Footer */
+.footer {
+  padding: px;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 700px) {
+  .row {   
+    flex-direction: column;
+  }
+}
+
+/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+@media screen and (max-width: 400px) {
+  .navbar a {
+    float: none;
+    width:100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <img   width="700px" padding= "80px"  src="http://www1.sust.edu/uploads/banner-images/1461497231-sust-front.jpg">
+  <h1>Shahjalal University of Science and Technology (SUST)</h1>
+</div>
+
+<div class="row">
+  <div class="main">
+    <h2>Overview</h2>
+    <p>After a long struggle and a relentless movement, the Shahjalal University of Science and Technology (SUST) was established in 1987. 
+        The only university of its kind at that time, it started it's career on the 1st Phalgun(13th of February 1991) with only three departments: Physics, Chemistry and Economics, 13 teachers and 205 students. 
+        It has now expanded to 7 schools, 27 departments and two institutes. The number of teachers has grown to 487 and the students to 9262. 
+        Besides, the University has 8 affiliated medical colleges under the School of Medical Sciences with 2744 students. 
+        SUST introduced the integrated honours course for the first time in Bangladesh. 
+        It introduced the semester system from the 1996-97 session and there was a remarkable improvement in the quality of education after the introduction of this system, which was visible even in the national arena. 
+        Every student from SUST has to take two language courses, one in Bangla and the other one in English. 
+        Every student also has to take two computer courses, one for computer literacy and the other to learn a computer language. 
+        The computer center of SUST offers courses to every employees and one can say, without any hesitation that SUST is the most IT enabled university in this country. 
+        SUST has started it's graduate programs by offering masters degree to graduating bachelors of most of the departments. 
+        It is difficult to start a world-class research program without a well funded graduate school, even then the teachers of SUST are trying to create a research environment in the campus. Two research journals are published regularly from SUST, one in Bangla and the other one in English where a few hundred research papers are submitted every year. 
+        Several departments have hosted International Conferences and are planning to organize similar events in the near future.</p>
+  </div>
+</div>
+
+<div class="footer">
+    <p>Software Developed By: Sourav Saha, Abdullahil Kafi</p>
+</div>
+
+</body>
+</html>
