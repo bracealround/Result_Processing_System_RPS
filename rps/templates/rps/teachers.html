@@ -24,7 +24,7 @@
                     <div class="col-md-12"><label class="labels">Department:</label>{{ teacher.department}}</div>
                     <div class="col-md-12"><label class="labels">Designation:</label>{{ teacher.title}}</div>
                 </div>
-                <form action="{% url " edit_teachers_profile" %}" method="GET">
+                <form action="{% url 'edit_teachers_profile' %}" method="GET">
                     <div class="mt-5 text-right">
                         <button class="btn btn-primary profile-button" type="submit">Edit Profile</button>
                     </div>

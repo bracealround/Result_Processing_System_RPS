@@ -8,14 +8,18 @@
 
         <div class="col col-md-4 align-self-start my-auto">
             <div class="card text-white bg-primary mb-3 mx-3" style="max-width: 30rem;">
-                <div class="card-header"><h4>Total Courses: {{total_available_courses}}</h4></div>
+                <div class="card-header">
+                    <h4>Total Courses: {{total_available_courses}}</h4>
+                </div>
                 <div class="card-body"></div>
             </div>
         </div>
 
         <div class="col col-md-4">
             <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
-                <div class="card-header"><h4>Courses Enrolled: {{courses_enrolled}}</h4></div>
+                <div class="card-header">
+                    <h4>Courses Enrolled: {{courses_enrolled}}</h4>
+                </div>
                 <div class="card-body">
                 </div>
             </div>
@@ -47,23 +51,84 @@
                     <th class="text-center">Course Title</th>
                     <th class="text-center">Credit</th>
                     <th class="text-center">Enrollment Status</th>
+                    <th class="text-center">Approval Status</th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for course in courses %}
-                    <tr>
-                        <td> {{course.course.course_code}} </td> </td>
-                        <td> {{course.course.course_name}} </td>
-                        <td> {{course.course.credit_no}} </td>
-                        {% if enrollment.course == "True" %}
-                            <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a></td>
-                        {% else %}
-                            <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enroll Now</a></td>
-                        {% endif %}
-                    </tr>
+                <tr>
+                    <td> {{course.course.course_code}} </td>
+                    </td>
+                    <td> {{course.course.course_name}} </td>
+                    <td> {{course.course.credit_no}} </td>
+
+                    {% if course.has_enrolled == True and course.is_approved == True %}
+
+                    <td>
+                        <button class="btn btn-success" desabled>
+                            Enrolled
+                        </button>
+                        <!-- <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a> -->
+                    </td>
+
+                    {% elif course.has_enrolled == True and course.is_approved == False %}
+
+                    <td>
+                        <button class="btn btn-secondary" desabled>
+                            Pending
+                        </button>
+                        <!-- <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a> -->
+                    </td>
+
+                    {% else %}
+
+                    <td>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <input class="btn btn-primary" type="submit" name="{{course.id}}" value="Enroll" />
+                        </form>
+                        <!-- <a href="#" class="btn btn-primary" role="button" aria-pressed="true">Enroll Now</a> -->
+                    </td>
+
+                    {% endif %}
+
+                    <td>{{course.is_approved}}</td>
+
+                    <!-- {% if enrollment.course == "True" %}
+                    <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a></td>
+                    {% else %}
+                    <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enroll Now</a>
+                    </td>
+                    {% endif %} -->
+
+                </tr>
                 {% endfor %}
 
+                <!-- {% for course in enrolled_courses %}
+
+                <tr>
+                    <td> {{course.course.course_code}} </td>
+                    <td> {{course.course.course_name}} </td>
+                    <td> {{course.course.credit_no}} </td>
+                    {% if course.has_enrolled == True %}
+                    <td>
+                        <button class="btn btn-secondary" desabled>
+                            Enrolled
+                        </button>
+                        <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a>
+                    </td>
+                    {% else %}
+                    <td>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <input class="btn btn-primary" type="submit" name="{{course.id}}" value="Enroll" />
+                        </form>
+                        <a href="#" class="btn btn-primary" role="button" aria-pressed="true">Enroll Now</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %} -->
 
             </tbody>
         </table>

@@ -1,3 +1,5 @@
+from django.db.models import BooleanField
+from django.db.models.expressions import Exists, OuterRef, Case, Subquery, When, Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -40,8 +42,8 @@ class GeneratePdf_view(View):
         # )
 
         query_set = Mark.objects.filter(
-        enrollment__student__user=request.user, is_approved=True
-    )
+            enrollment__student__user=request.user, is_approved=True
+        )
         if query_set.exists():
             total_credits = query_set.aggregate(
                 Sum("enrollment__course__course__credit_no")
@@ -64,8 +66,13 @@ class GeneratePdf_view(View):
         department = Student.objects.get(user=request.user).department
         session = Student.objects.get(user=request.user).session
 
-
-        d = {"data": list(query_set), "cgpa": cgpa,"registration_no": registration_no,"department":department, "session":session}
+        d = {
+            "data": list(query_set),
+            "cgpa": cgpa,
+            "registration_no": registration_no,
+            "department": department,
+            "session": session,
+        }
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
         # Converting the HTML template into a PDF file
@@ -141,12 +148,62 @@ def students_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def enrollment_view(request):
-    # student = Student.objects.get(user=request.user)
-    query_set = Assignment.objects.filter(department=request.user.student.department)
-    total_courses =query_set.filter().count()
-    total_courses_enrolled =Enrollment.objects.filter(student=request.user.student).count()
-    return render(request, "enrollment.html", {"courses": list(query_set), "total_available_courses": total_courses,
-     "courses_enrolled": total_courses_enrolled})
+
+    student = Student.objects.get(user=request.user)
+    query_set = Assignment.objects.filter(department=student.department)
+
+    if request.method == "POST":
+        for course in query_set:
+            if str(course.id) in request.POST:
+                print("hi", course.course.course_code)
+
+                with transaction.atomic():
+                    enrollment = Enrollment()
+                    enrollment.student = student
+                    enrollment.course = course
+                    enrollment.save()
+
+                break
+
+    query_set = query_set.annotate(
+        has_enrolled=Case(
+            When(
+                Exists(
+                    Enrollment.objects.filter(course=OuterRef("pk"), student=student)
+                ),
+                then=Value(True),
+            ),
+            default=Value(False),
+            output_field=BooleanField(),
+        )
+    ).annotate(
+        is_approved=Case(
+            When(
+                Exists(
+                    Enrollment.objects.filter(
+                        course=OuterRef("pk"), student=student, is_approved=True
+                    )
+                ),
+                then=Value(True),
+            ),
+            default=Value(False),
+            output_field=BooleanField(),
+        )
+    )
+
+    total_courses = query_set.count()
+    total_courses_enrolled = Enrollment.objects.filter(student=student).count()
+
+    return render(
+        request,
+        "enrollment.html",
+        {
+            "courses": list(query_set),
+            "total_available_courses": total_courses,
+            "courses_enrolled": total_courses_enrolled,
+        },
+    )
+
 
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
@@ -154,15 +211,23 @@ def ranklist_view(request):
     # student = Student.objects.get(user=request.user)
     query_set = Enrollment.objects.filter(student=request.user.student)
     print(query_set)
-    total_courses =query_set.filter().count()
-    total_courses_enrolled =0
+    total_courses = query_set.count()
+    total_courses_enrolled = 0
     courses_enrolled = []
     for course in query_set:
-        courses_enrolled.append(hasattr(course, 'enrollment'))
-        if(hasattr(course, 'enrollment')):
-            total_courses_enrolled+=1
-    return render(request, "ranklist.html", {"courses": list(query_set), "total_available_courses": total_courses,
-     "courses_enrolled": total_courses_enrolled, "courses_enrolled": courses_enrolled})
+        courses_enrolled.append(hasattr(course, "enrollment"))
+        if hasattr(course, "enrollment"):
+            total_courses_enrolled += 1
+    return render(
+        request,
+        "ranklist.html",
+        {
+            "courses": list(query_set),
+            "total_available_courses": total_courses,
+            "courses_enrolled": total_courses_enrolled,
+            "courses_enrolled": courses_enrolled,
+        },
+    )
 
 
 @login_required(login_url="login")
