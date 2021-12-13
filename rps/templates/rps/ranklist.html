@@ -11,19 +11,23 @@
         <table class="table table-bordered table-striped" id="datatablesSimple">
             <thead class="table-dark">
                 <tr>
-                    <th>Course(Department)</th>
-                    <th>View Ranklist</th>
+                    <th>Registration No.</th>
+                    <th>Name</th>
+                    <th>Credits Completed</th>
+                    <th>CGPA</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for crs in courses %}
-                    <tr>
-                        <td> {{crs.course}} </td>
-                        <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">View Ranklist</a></td>
-                    </tr>
+                {% for student in ranklists %}
+                <tr>
+                    <td> {{student.registration_no}} </td>
+                    <td> {{student.student_name}} </td>
+                    <td> {{student.total_credits}} </td>
+                    <td> {{student.cgpa}} </td>
+                </tr>
                 {% endfor %}
-                
+
             </tbody>
         </table>
     </div>

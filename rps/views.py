@@ -1,5 +1,5 @@
-from django.db.models import BooleanField
-from django.db.models.expressions import Exists, OuterRef, Case, Subquery, When, Q
+from django.db.models import BooleanField, DecimalField, ExpressionWrapper
+from django.db.models.expressions import Exists, OuterRef, Case, Subquery, When, Q, F
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -47,11 +47,11 @@ class GeneratePdf_view(View):
         registration_no = Student.objects.get(user=request.user).registration_no
         department = Student.objects.get(user=request.user).department
         session = Student.objects.get(user=request.user).session
-        total_credits_earned =Mark.objects.filter(
-        enrollment__student__user=request.user, is_approved=True
-        ).aggregate(
-            Sum("enrollment__course__course__credit_no")
-        )["enrollment__course__course__credit_no__sum"]
+        total_credits_earned = Mark.objects.filter(
+            enrollment__student__user=request.user, is_approved=True
+        ).aggregate(Sum("enrollment__course__course__credit_no"))[
+            "enrollment__course__course__credit_no__sum"
+        ]
 
         d = {
             "data": list(query_set),
@@ -223,14 +223,43 @@ def enrollment_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def ranklist_view(request):
+
+    if request.method == "POST":
+        pass
+
     student = Student.objects.get(user=request.user)
 
-    query_set = Mark.objects.filter(
-        enrollment__student__department=student.department,
-        enrollment__student__session=student.session,
+    query_set = (
+        Mark.objects.filter(
+            enrollment__student__department=student.department,
+            enrollment__student__session=student.session,
+            is_approved=True,
+        )
+        .annotate(registration_no=F("enrollment__student__registration_no"))
+        .annotate(
+            student_name=Concat(
+                F("enrollment__student__first_name"),
+                Value(" "),
+                F("enrollment__student__last_name"),
+            )
+        )
     )
-    query_set = Enrollment.objects.filter(student=request.user.student)
-    return render(request, "ranklist.html", {"courses": list(query_set)})
+
+    query_set = (
+        query_set.values("registration_no", "student_name")
+        .annotate(total_credits=Sum("enrollment__course__course__credit_no"))
+        .annotate(
+            cgpa=ExpressionWrapper(
+                (
+                    Sum(F("enrollment__course__course__credit_no") * F("gpa"))
+                    / F("total_credits")
+                ),
+                output_field=DecimalField(decimal_places=2),
+            )
+        )
+    )
+
+    return render(request, "ranklist.html", {"ranklists": list(query_set)})
 
 
 @login_required(login_url="login")
@@ -267,12 +296,14 @@ def institute_teacher_view(request):
 
 
 @login_required(login_url="login")
-def notice_board_view(request,path):
+def notice_board_view(request, path):
     file_path = os.path.join(settings.MEDIA_ROOT, path)
     if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
+        with open(file_path, "rb") as fh:
             response = HttpResponse(fh.read(), content_type="application/pdf")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            response["Content-Disposition"] = "inline; filename=" + os.path.basename(
+                file_path
+            )
             return response
     return render(request, "noticeboard.html", {"pdf": list(pdf)})
 
