@@ -1,9 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext as _
 from decimal import *
 from rps.result import calculate_gpa_and_grade
+from .validators import validate_session
 
 # Create your models here.
 # Department table
@@ -18,12 +20,21 @@ class Department(models.Model):
 # Student table (ManyToMany relation to be built with Course)
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(default="default.jpg", upload_to="profile_pics")
     registration_no = models.IntegerField(unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    session = models.CharField(max_length=20)
+    session = models.CharField(
+        max_length=7,
+        validators=[
+            RegexValidator(
+                regex="^[0-9]{4}-[0-9]{2}$",
+                message="Session format must follow the format: <year><hyphen><last 2 digits of the following year>, e.g. 2017-18 or 2020-21",
+                code="invalid_session",
+            ),
+        ],
+    )
 
     def __str__(self):
         return (
@@ -38,7 +49,7 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(default="default.jpg", upload_to="profile_pics")
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

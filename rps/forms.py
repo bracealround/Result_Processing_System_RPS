@@ -1,5 +1,27 @@
 from django import forms
-from rps.models import Course, Enrollment, Assignment
+from django.contrib import admin
+from django.contrib.admin.widgets import AutocompleteSelect
+from rps.models import Course, Enrollment, Assignment, Teacher
+
+
+class FakeRelation:
+    def __init__(self, model):
+        self.model = model
+
+
+class CustomAutocompleteSelect(AutocompleteSelect):
+    def __init__(self, model, admin_site, attrs=None, choices=(), using=None):
+        rel = FakeRelation(model)
+        super().__init__(rel, admin_site, attrs=attrs, choices=choices, using=using)
+
+
+class MyForm(forms.Form):
+    DateFrom = forms.DateField(label="From")
+    DateTo = forms.DateField(label="To")
+    PE1_Name = forms.ModelChoiceField(
+        queryset=Enrollment.objects.all(),
+        widget=CustomAutocompleteSelect(Enrollment, admin.AdminSite),
+    )
 
 
 class individual_resultForm(forms.Form):
@@ -18,7 +40,6 @@ class individual_resultForm(forms.Form):
         self.fields["course"].queryset = Assignment.objects.filter(
             teacher=self.teacher
         )  # More filters to be added. Assignments from zillion years ago should not appear.
-        # self.fields["course"].widget = forms.TextField(max_length=100)
 
 
 class upload_csv_form(forms.Form):

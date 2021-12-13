@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
-from .models import (
+from users.models import CustomUser
+from rps.models import (
     Staff,
     Student,
     Teacher,
@@ -37,6 +38,14 @@ class MarkAdmin(admin.ModelAdmin):
 
         print("test passed")
 
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == "enrollment":
+            kwargs["queryset"] = Enrollment.objects.filter(is_approved=False)
+
+        return super(MarkAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
+
     # def save_model(self, request, obj, form, change):
     #     obj.user = request.user
     #     super().save_model(request, obj, form, change)
@@ -69,6 +78,13 @@ class StudentAdmin(admin.ModelAdmin):
 
     link_to_Department.allow_tags = True
     link_to_Department.short_description = "department"
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == "user":
+            kwargs["queryset"] = CustomUser.objects.filter(is_student=True)
+        return super(StudentAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
 
     # fieldsets = ((None, {"fields": ("")}),)
 
@@ -108,6 +124,13 @@ class TeacherAdmin(admin.ModelAdmin):
     list_display = ("first_name", "last_name", "department", "title")
 
     exclude = ()
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == "user":
+            kwargs["queryset"] = CustomUser.objects.filter(is_teacher=True)
+        return super(TeacherAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
 
 
 class DepartmentAdmin(admin.ModelAdmin):

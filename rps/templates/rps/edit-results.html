@@ -1,5 +1,10 @@
 {% extends "rps/base.html" %}
 
+{% block extrahead %}
+{{ block.super }}
+{{ form.media }}
+{% endblock %}
+
 {% block content %}
 
 <!-- <div class="row">

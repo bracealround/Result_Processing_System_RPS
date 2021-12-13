@@ -40,7 +40,6 @@
                     <th class="text-center">Course Title</th>
                     <th class="text-center">Credit</th>
                     <th class="text-center">Enrollment Status</th>
-                    <th class="text-center">Approval Status</th>
                 </tr>
             </thead>
 
@@ -55,9 +54,10 @@
                     {% if course.has_enrolled == True and course.is_approved == True %}
 
                     <td>
-                        <button class="btn btn-success" desabled>
-                            Enrolled
-                        </button>
+                        <!-- <h6 class="text-success"> -->
+
+                        <p class="h6 text-center text-success">Enrolled</p>
+                        <!-- </h6> -->
                         <!-- <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a> -->
                     </td>
 
@@ -81,8 +81,6 @@
                     </td>
 
                     {% endif %}
-
-                    <td>{{course.is_approved}}</td>
 
                     <!-- {% if enrollment.course == "True" %}
                     <td> <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Enrolled</a></td>
