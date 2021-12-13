@@ -11,6 +11,7 @@ from django.db.models import Count, Sum, Value
 from django.db.models.functions import Concat
 from decimal import Decimal
 import logging, datetime
+import os
 from rps import models
 from rps.models import (
     Course,
@@ -65,6 +66,11 @@ class GeneratePdf_view(View):
         registration_no = Student.objects.get(user=request.user).registration_no
         department = Student.objects.get(user=request.user).department
         session = Student.objects.get(user=request.user).session
+        total_credits_earned =Mark.objects.filter(
+        enrollment__student__user=request.user, is_approved=True
+        ).aggregate(
+            Sum("enrollment__course__course__credit_no")
+        )["enrollment__course__course__credit_no__sum"]
 
         d = {
             "data": list(query_set),
@@ -72,6 +78,7 @@ class GeneratePdf_view(View):
             "registration_no": registration_no,
             "department": department,
             "session": session,
+            "total_credits_earned": total_credits_earned,
         }
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
@@ -264,10 +271,13 @@ def institute_teacher_view(request):
 
 
 @login_required(login_url="login")
-def notice_board_view(request):
-    pdf = pdfupload.objects.all()
-    for p in list(pdf):
-        print(p)
+def notice_board_view(request,path):
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/pdf")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
     return render(request, "noticeboard.html", {"pdf": list(pdf)})
 
 
@@ -284,7 +294,6 @@ def edit_students_profile_view(request):
         try:
             with transaction.atomic():
                 if form.is_valid():
-                    print("yep")
 
                     first_name = form.cleaned_data["first_name"]
                     last_name = form.cleaned_data["last_name"]
@@ -326,7 +335,6 @@ def edit_teachers_profile_view(request):
         try:
             with transaction.atomic():
                 if form.is_valid():
-                    print("yep")
 
                     first_name = form.cleaned_data["first_name"]
                     last_name = form.cleaned_data["last_name"]
