@@ -42,24 +42,37 @@ class GeneratePdf_view(View):
         #     render_to_string("rps/results.html", {"data": data})
         # )
 
-        query_set = Mark.objects.filter(enrollment__course__teacher__user=request.user)
+        query_set = Mark.objects.filter(
+            enrollment__student__user=request.user, is_approved=True
+        )
+        if query_set.exists():
+            total_credits = query_set.aggregate(
+                Sum("enrollment__course__course__credit_no")
+            )["enrollment__course__course__credit_no__sum"]
+            print("total: ", total_credits)
+            marks = list(query_set)
+
+            sum = Decimal("0.0")
+            for mark in marks:
+                sum = sum + (mark.gpa * mark.enrollment.course.course.credit_no)
+
+            print(sum)
+            cgpa = sum / total_credits
+            print("cgpa: ", cgpa)
+        else:
+            cgpa = Decimal("0.0")
+            total_credits = Decimal("0.0")
 
         registration_no = Student.objects.get(user=request.user).registration_no
         department = Student.objects.get(user=request.user).department
         session = Student.objects.get(user=request.user).session
-        total_credits_earned = Mark.objects.filter(
-            enrollment__student__user=request.user, is_approved=True
-        ).aggregate(Sum("enrollment__course__course__credit_no"))[
-            "enrollment__course__course__credit_no__sum"
-        ]
 
         d = {
             "data": list(query_set),
+            "cgpa": cgpa,
             "registration_no": registration_no,
             "department": department,
             "session": session,
-            "total_credits_earned": total_credits_earned,
-            "marks": list(query_set),
         }
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
@@ -76,9 +89,11 @@ class GeneratePdfTeachers_view(View):
         query_set = Mark.objects.filter(enrollment__course__teacher__user=request.user)
 
 
-        #registration_no = Student.objects.get(user=request.user).registration_no
-        #department = Student.objects.get(user=request.user).department
-        #session = Student.objects.get(user=request.user).session
+        first_name = Teacher.objects.get(user=request.user).first_name
+        last_name = Teacher.objects.get(user=request.user).last_name
+        full_name = first_name + " " + last_name
+        department = Teacher.objects.get(user=request.user).department
+        designation = Teacher.objects.get(user=request.user).title
         #total_credits_earned =Mark.objects.filter(
         #enrollment__student__user=request.user, is_approved=True
         #).aggregate(
@@ -87,6 +102,9 @@ class GeneratePdfTeachers_view(View):
 
         d = {
             "data": list(query_set),
+            "teacher_name": full_name,
+            "teacher_deparment": department,
+            "teacher_designation": designation
         }
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
@@ -258,7 +276,7 @@ def ranklist_view(request):
             )
         )
     )
-
+    query_set = query_set.order_by("-cgpa")
     return render(request, "ranklist.html", {"ranklists": list(query_set)})
 
 
@@ -421,7 +439,7 @@ def results_view(request):
             sum = sum + (mark.gpa * mark.enrollment.course.course.credit_no)
 
         print(sum)
-        cgpa = sum / total_credits
+        cgpa = round(sum / total_credits ,2)
         print("cgpa: ", cgpa)
     else:
         cgpa = Decimal("0.0")
