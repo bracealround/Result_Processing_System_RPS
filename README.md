@@ -1,5 +1,17 @@
 # Result_Processing_System
-This is a Result Processing System Web Application made with HTML,CSS,Javascript and django Framework of python.
+
+
+# Project Description:
+We crated a Result Processing System (RPS) for an university. The app provies the students the scope to look into result related different information stating from differnet teacher, student and staff info, edit their own profile, look into results based on differnet criteria, view the total ranklist for different courses and finally download the result.The teachers will have the functionality to update the result of the courses assigned to them either for individual student or for a course as a csv file. The admin has the ultimate authority to define users, students, teachers, courses, departments, assignment or update or delate any one of the object.
+
+## Languages Used:
+ - HTML
+ - CSS
+ - Javascript
+ - Python
+
+## Framework
+ - Django
 
 # Functionalities:
 
@@ -36,4 +48,11 @@ A Teacher will have the following funtionalities:
  - Update the result for a course as awhole with CSV.
  - Download the result.
 
+## Admin Funtionalities:
+An admin will have the following functionalities:
+ - Create user
+ - Define different user as teacher as student, teacher or staff
+ - Create new Departments and Courses.
+ - Assign teachers to specific course
+ - Approve the status of differnet students course enrollment
     
