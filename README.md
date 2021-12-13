@@ -55,4 +55,32 @@ An admin will have the following functionalities:
  - Create new Departments and Courses.
  - Assign teachers to specific course
  - Approve the status of differnet students course enrollment
+
+## Clone this Project:
+```
+git clone https://github.com/Akib-Alvee/TourGuide.git
+```
+
+## Run the Project in your Machine
+
+Install virtual environment :
+```
+pip install virtualenv
+```
+Create your own environment :
+```
+pipenv shell
+```
+Now install requirements.txt :
+```
+pip install -r requirements.txt
+```
+Then run the server :
+```
+python manage.py runserver
+```
+
+## Authors
+- [Abdualahil Kafi](https://github.com/abkafi001) (2017331072)
+- [Sourav Saha](https://github.com/bracealround)(2017331095)
     
