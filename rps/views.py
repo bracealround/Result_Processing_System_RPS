@@ -207,26 +207,14 @@ def enrollment_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_student, login_url="home")
 def ranklist_view(request):
-    # student = Student.objects.get(user=request.user)
-    query_set = Enrollment.objects.filter(student=request.user.student)
-    print(query_set)
-    total_courses = query_set.count()
-    total_courses_enrolled = 0
-    courses_enrolled = []
-    for course in query_set:
-        courses_enrolled.append(hasattr(course, "enrollment"))
-        if hasattr(course, "enrollment"):
-            total_courses_enrolled += 1
-    return render(
-        request,
-        "ranklist.html",
-        {
-            "courses": list(query_set),
-            "total_available_courses": total_courses,
-            "courses_enrolled": total_courses_enrolled,
-            "courses_enrolled": courses_enrolled,
-        },
+    student = Student.objects.get(user=request.user)
+
+    query_set = Mark.objects.filter(
+        enrollment__student__department=student.department,
+        enrollment__student__session=student.session,
     )
+    query_set = Enrollment.objects.filter(student=request.user.student)
+    return render(request, "ranklist.html", {"courses": list(query_set)})
 
 
 @login_required(login_url="login")
@@ -275,7 +263,6 @@ def edit_students_profile_view(request):
         try:
             with transaction.atomic():
                 if form.is_valid():
-                    print("yep")
 
                     first_name = form.cleaned_data["first_name"]
                     last_name = form.cleaned_data["last_name"]
@@ -317,7 +304,6 @@ def edit_teachers_profile_view(request):
         try:
             with transaction.atomic():
                 if form.is_valid():
-                    print("yep")
 
                     first_name = form.cleaned_data["first_name"]
                     last_name = form.cleaned_data["last_name"]
