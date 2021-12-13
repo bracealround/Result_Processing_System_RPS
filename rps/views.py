@@ -57,7 +57,7 @@ class GeneratePdf_view(View):
                 sum = sum + (mark.gpa * mark.enrollment.course.course.credit_no)
 
             print(sum)
-            cgpa = sum / total_credits
+            cgpa = round(sum / total_credits , 2 )
             print("cgpa: ", cgpa)
         else:
             cgpa = Decimal("0.0")
