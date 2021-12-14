@@ -40,7 +40,7 @@ class MarkAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == "enrollment":
-            kwargs["queryset"] = Enrollment.objects.filter(is_approved=False)
+            kwargs["queryset"] = Enrollment.objects.filter(is_approved=True)
 
         return super(MarkAdmin, self).formfield_for_foreignkey(
             db_field, request, **kwargs
