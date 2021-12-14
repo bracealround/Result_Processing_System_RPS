@@ -117,6 +117,12 @@ python manage.py runserver
   <img src="img/View_Total_Ranklist.PNG" width="250" />
 </p>
 
+
+## Presentation
+
+https://user-images.githubusercontent.com/50485574/146090095-c2986fdc-9d4f-4234-982d-699c8953eceb.mp4
+
+
 ## Authors
 - [Abdualahil Kafi](https://github.com/abkafi001) (2017331072)
 - [Sourav Saha](https://github.com/bracealround)(2017331095)
