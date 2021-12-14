@@ -116,6 +116,7 @@ python manage.py runserver
   <img src="img/View_Individual_Rank.PNG" width="250" />
   <img src="img/View_Total_Ranklist.PNG" width="250" />
 </p>
+
 ## Authors
 - [Abdualahil Kafi](https://github.com/abkafi001) (2017331072)
 - [Sourav Saha](https://github.com/bracealround)(2017331095)
