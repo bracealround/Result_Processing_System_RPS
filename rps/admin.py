@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from users.models import CustomUser
+from django.db.models.expressions import Exists, OuterRef
 from rps.models import (
     Staff,
     Student,
@@ -81,7 +82,9 @@ class StudentAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == "user":
-            kwargs["queryset"] = CustomUser.objects.filter(is_student=True)
+            kwargs["queryset"] = CustomUser.objects.filter(
+                is_student=True, student__isnull=True
+            )
         return super(StudentAdmin, self).formfield_for_foreignkey(
             db_field, request, **kwargs
         )
@@ -127,7 +130,9 @@ class TeacherAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == "user":
-            kwargs["queryset"] = CustomUser.objects.filter(is_teacher=True)
+            kwargs["queryset"] = CustomUser.objects.filter(
+                is_teacher=True, teacher__isnull=True
+            )
         return super(TeacherAdmin, self).formfield_for_foreignkey(
             db_field, request, **kwargs
         )

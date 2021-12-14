@@ -78,7 +78,7 @@
       </div>
     </div>
 
-    
+
 
     <div class="col col-md-6">
       <div class="card w-75">
@@ -105,6 +105,11 @@
   {% if request.session.error %}
   <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
     <strong>Error!</strong> {{request.session.error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% elif request.session.is_saved == "True" %}
+  <div class="alert alert-success alert-dismissible fade show mt-5" role="alert">
+    <strong>Success!</strong>Result uploaded.
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   {% endif %}
