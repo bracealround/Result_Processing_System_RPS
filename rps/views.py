@@ -11,6 +11,7 @@ from django.db.models import Count, Sum, Value
 from django.db.models.functions import Concat
 from decimal import Decimal
 import logging, datetime
+import os
 from rps import models
 from rps.models import (
     Course,
@@ -21,6 +22,7 @@ from rps.models import (
     Teacher,
     Enrollment,
     Assignment,
+    pdfupload,
 )
 from .forms import individual_resultForm, upload_csv_form, edit_profile, select_semester
 from django.http import HttpResponse
@@ -64,6 +66,11 @@ class GeneratePdf_view(View):
         registration_no = Student.objects.get(user=request.user).registration_no
         department = Student.objects.get(user=request.user).department
         session = Student.objects.get(user=request.user).session
+        total_credits_earned =Mark.objects.filter(
+        enrollment__student__user=request.user, is_approved=True
+        ).aggregate(
+            Sum("enrollment__course__course__credit_no")
+        )["enrollment__course__course__credit_no__sum"]
 
         d = {
             "data": list(query_set),
@@ -71,6 +78,7 @@ class GeneratePdf_view(View):
             "registration_no": registration_no,
             "department": department,
             "session": session,
+            "total_credits_earned": total_credits_earned,
         }
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
@@ -248,6 +256,17 @@ def institute_students_view(request):
 def institute_teacher_view(request):
     teacher = Teacher.objects.all()
     return render(request, "institute_teachers.html", {"ins_teacher": list(teacher)})
+
+
+@login_required(login_url="login")
+def notice_board_view(request,path):
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/pdf")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    return render(request, "noticeboard.html", {"pdf": list(pdf)})
 
 
 @login_required(login_url="login")

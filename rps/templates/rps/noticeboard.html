@@ -1,0 +1,53 @@
+
+
+{% extends "rps/base.html" %}
+
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        DataTable Example
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="datatablesSimple">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>PDF</th>
+                </tr>
+            </thead>
+            <!-- <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Office</th>
+                        <th>Age</th>
+                        <th>Start date</th>
+                        <th>Salary</th>
+                    </tr>
+                </tfoot> -->
+            <tbody>
+
+                {% for p in pdf %}
+                <tr>
+                    <td> </td>
+                    <td><a href="{{p.url}}">Click here to download PDF</a> </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script>
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
+</script>
+
+{% endblock %}

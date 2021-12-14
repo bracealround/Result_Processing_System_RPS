@@ -11,6 +11,7 @@ from rps.models import (
     Assignment,
     Enrollment,
     Mark,
+    pdfupload,
 )
 
 
@@ -162,3 +163,4 @@ admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(Enrollment, EnrollmentAdmin)
 admin.site.register(Mark, MarkAdmin)
 admin.site.register(Staff, StaffAdmin)
+admin.site.register(pdfupload)
