@@ -120,7 +120,9 @@ python manage.py runserver
 
 ## Presentation
 
-https://user-images.githubusercontent.com/50485574/146090095-c2986fdc-9d4f-4234-982d-699c8953eceb.mp4
+
+https://user-images.githubusercontent.com/50485574/146090277-f3b0861f-f434-4108-8ad0-2188138a68fd.mp4
+
 
 
 ## Authors
