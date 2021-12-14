@@ -71,6 +71,7 @@ class GeneratePdf_view(View):
             "registration_no": registration_no,
             "department": department,
             "session": session,
+            "total_credits_completed": total_credits
         }
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
