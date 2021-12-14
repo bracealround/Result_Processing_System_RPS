@@ -8,9 +8,11 @@
         <i class="fas fa-table me-1"></i>
     </div>
     <div class="card-body mt-3">
+        {% if assignment == "N/A" %}
         <table class="table table-bordered table-striped" id="datatablesSimple">
             <thead class="table-dark">
                 <tr>
+                    <th>Rank</th>
                     <th>Registration No.</th>
                     <th>Name</th>
                     <th>Credits Completed</th>
@@ -21,6 +23,7 @@
             <tbody>
                 {% for student in ranklists %}
                 <tr>
+                    <td>{{forloop.counter}}</td>
                     <td> {{student.registration_no}} </td>
                     <td> {{student.student_name}} </td>
                     <td> {{student.total_credits}} </td>
@@ -30,6 +33,35 @@
 
             </tbody>
         </table>
+        {% else %}
+        <h4>Rank list for the course: {{assignment.course}}, taken by {{assignment.teacher}} in {{assignment.year}}</h4>
+        <table class="table table-bordered table-striped" id="datatablesSimple">
+            <thead class="table-dark">
+                <tr>
+                    <th>Rank</th>
+                    <th>Registration No.</th>
+                    <th>Name</th>
+                    <th>Final Mark</th>
+                    <th>GPA</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for student in ranklists %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td> {{student.registration_no}} </td>
+                    <td> {{student.student_name}} </td>
+                    <td> {{student.final_result}} </td>
+                    <td> {{student.gpa}} </td>
+                    <td> {{student.grade}} </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 </div>
 

@@ -216,42 +216,81 @@ def enrollment_view(request):
 @user_passes_test(is_student, login_url="home")
 def ranklist_view(request):
 
-    if request.method == "POST":
-        pass
-
     student = Student.objects.get(user=request.user)
-
-    query_set = (
-        Mark.objects.filter(
-            enrollment__student__department=student.department,
-            enrollment__student__session=student.session,
-            is_approved=True,
-        )
-        .annotate(registration_no=F("enrollment__student__registration_no"))
-        .annotate(
-            student_name=Concat(
-                F("enrollment__student__first_name"),
-                Value(" "),
-                F("enrollment__student__last_name"),
+    assignments = Assignment.objects.filter(
+        Exists(
+            Mark.objects.filter(
+                enrollment__course=OuterRef("pk"),
+                enrollment__student=student,
+                is_approved=True,
             )
         )
     )
 
-    query_set = (
-        query_set.values("registration_no", "student_name")
-        .annotate(total_credits=Sum("enrollment__course__course__credit_no"))
-        .annotate(
-            cgpa=ExpressionWrapper(
-                (
-                    Sum(F("enrollment__course__course__credit_no") * F("gpa"))
-                    / F("total_credits")
-                ),
-                output_field=DecimalField(decimal_places=2),
+    query_set = {}
+
+    if request.method == "POST":
+        for assignment in assignments:
+            if str(assignment.id) in request.POST:
+                query_set = (
+                    Mark.objects.filter(
+                        enrollment__course=assignment,
+                        is_approved=True,
+                    )
+                    .annotate(registration_no=F("enrollment__student__registration_no"))
+                    .annotate(
+                        student_name=Concat(
+                            F("enrollment__student__first_name"),
+                            Value(" "),
+                            F("enrollment__student__last_name"),
+                        )
+                    )
+                )
+
+                print(query_set)
+
+                assignment = assignment
+
+                break
+
+    else:
+        query_set = (
+            Mark.objects.filter(
+                enrollment__student__department=student.department,
+                enrollment__student__session=student.session,
+                is_approved=True,
+            )
+            .annotate(registration_no=F("enrollment__student__registration_no"))
+            .annotate(
+                student_name=Concat(
+                    F("enrollment__student__first_name"),
+                    Value(" "),
+                    F("enrollment__student__last_name"),
+                )
             )
         )
-    )
 
-    return render(request, "ranklist.html", {"ranklists": list(query_set)})
+        query_set = (
+            query_set.values("registration_no", "student_name")
+            .annotate(total_credits=Sum("enrollment__course__course__credit_no"))
+            .annotate(
+                cgpa=ExpressionWrapper(
+                    (
+                        Sum(F("enrollment__course__course__credit_no") * F("gpa"))
+                        / F("total_credits")
+                    ),
+                    output_field=DecimalField(decimal_places=2),
+                )
+            )
+        )
+
+        assignment = "N/A"
+
+    return render(
+        request,
+        "ranklist.html",
+        {"ranklists": list(query_set), "assignment": assignment},
+    )
 
 
 @login_required(login_url="login")
@@ -395,7 +434,6 @@ def results_view(request):
 
         if form.is_valid():
             semester = form.cleaned_data["semester"]
-            print(semester)
             if semester != 0:
                 query_set = query_set.filter(enrollment__course__semester=semester)
     else:
@@ -405,16 +443,13 @@ def results_view(request):
         total_credits = query_set.aggregate(
             Sum("enrollment__course__course__credit_no")
         )["enrollment__course__course__credit_no__sum"]
-        print("total: ", total_credits)
         marks = list(query_set)
 
         sum = Decimal("0.0")
         for mark in marks:
             sum = sum + (mark.gpa * mark.enrollment.course.course.credit_no)
 
-        print(sum)
         cgpa = sum / total_credits
-        print("cgpa: ", cgpa)
     else:
         cgpa = Decimal("0.0")
         total_credits = Decimal("0.0")

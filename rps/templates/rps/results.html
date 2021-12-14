@@ -95,6 +95,7 @@
                     <th>Final Mark</th>
                     <th>Grade</th>
                     <th>GPA</th>
+                    <th>Link to Rank</th>
                 </tr>
             </thead>
 
@@ -118,6 +119,13 @@
                     <td> {{mark.final_result}} </td>
                     <td> {{mark.grade}} </td>
                     <td> {{mark.gpa}} </td>
+                    <td>
+                        <form action="{% url 'ranklist' %}" method="POST">
+                            {% csrf_token %}
+                            <input class="btn btn-primary" type="submit" name="{{mark.enrollment.course.id}}"
+                                value="View Rank" />
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
 
