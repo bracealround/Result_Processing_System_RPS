@@ -80,6 +80,42 @@ Then run the server :
 python manage.py runserver
 ```
 
+## Screenshots
+
+<p float="left">
+  <img src="img/Admin_Login.PNG" width="250" />
+  <img src="img/Admin.PNG" width="250" />
+  <img src="img/Admin_Enrollment.PNG" width="250" />
+</p>
+<p float="left">
+  <img src="img/Login.PNG" width="250" />
+  <img src="img/Teacher_Dashboard.PNG" width="250" />
+  <img src="img/Teacher_Profile.PNG" width="250" />
+</p>
+<p float="left">
+  <img src="img/Teacher_Approved_Result.PNG" width="250" />
+  <img src="img/Add_Result.PNG" width="250" />
+  <img src="img/Teacher_Download_Result.PNG" width="250" />
+</p>
+<p float="left">
+  <img src="img/Department_Details.PNG" width="250" />
+  <img src="img/Teachers_Details.PNG" width="250" />
+  <img src="img/Staff_Details.PNG" width="250" />
+</p>
+<p float="left">
+  <img src="img/Department_Details.PNG" width="250" />
+  <img src="img/Teachers_Details.PNG" width="250" />
+  <img src="img/Staff_Details.PNG" width="250" />
+</p>
+<p float="left">
+  <img src="img/Student_Profile.PNG" width="250" />
+  <img src="img/Enrolled_Courses.PNG" width="250" />
+  <img src="img/View_Rank.PNG" width="250" />
+</p>
+<p float="left">
+  <img src="img/View_Individual_Rank.PNG" width="250" />
+  <img src="img/View_Total_Ranklist.PNG" width="250" />
+</p>
 ## Authors
 - [Abdualahil Kafi](https://github.com/abkafi001) (2017331072)
 - [Sourav Saha](https://github.com/bracealround)(2017331095)
