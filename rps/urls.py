@@ -23,4 +23,5 @@ urlpatterns = [
     path("studnets/enrollment/", views.enrollment_view,name="enrollment"),
     path("studnets/ranklist/", views.ranklist_view,name="ranklist"),
     path("studnets/downloadpdf/", views.GeneratePdf_view.as_view(),name="download"),
+    path("teachers/downloadpdf/", views.GeneratePdfTeachers_view.as_view(),name="download_teachers"),
 ]
