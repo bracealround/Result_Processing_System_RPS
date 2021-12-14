@@ -309,7 +309,7 @@ def ranklist_view(request):
                         Sum(F("enrollment__course__course__credit_no") * F("gpa"))
                         / F("total_credits")
                     ),
-                    output_field=DecimalField(decimal_places=2),
+                    output_field=DecimalField(decimal_places=2, max_digits=3),
                 )
             )
         )
@@ -552,6 +552,8 @@ def edit_results_view(request):
 
                     mark.save()
 
+                    request.session["is_saved"] = "True"
+
             except ValueError as e:
                 request.session[
                     "error"
@@ -572,6 +574,7 @@ def edit_results_view(request):
 
             try:
                 upload_csv(request, csv_form.cleaned_data["course"])
+                request.session["is_saved"] = "True"
 
             except IntegrityError as e:
                 # print("gubbbbbb ", str(e))
@@ -593,6 +596,7 @@ def edit_results_view(request):
         request, "edit-results.html", {"form": form, "csv_form": csv_form}
     )
     request.session.pop("error", None)
+    request.session.pop("is_saved", None)
     return render_response
 
 
@@ -625,22 +629,26 @@ def upload_csv(request, course):
         file_data = csv_file.read().decode("utf-8")
 
         lines = file_data.split("\n")
-        print(len(lines))
+        lines = lines[: len(lines) - 1]
+        print("len: ", len(lines))
         # print("debug")
 
         index = 0
         try:
             for index, line in enumerate(lines):
+                print(line)
                 fields = line.split(",")
 
                 registration_no = fields[0]
                 student = Student.objects.get(registration_no=registration_no)
-
+                print(course, " ", datetime.datetime.now().year)
                 enrollment = Enrollment.objects.filter(
                     student=student,
-                    course__course=course,
-                    year=datetime.datetime.now().year,
+                    course=course,
+                    course__year=datetime.datetime.now().year,
                 ).first()
+
+                print(enrollment)
 
                 mark = Mark()
                 mark.enrollment = enrollment
