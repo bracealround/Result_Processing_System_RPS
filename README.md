@@ -58,7 +58,7 @@ An admin will have the following functionalities:
 
 ## Clone this Project:
 ```
-git clone https://github.com/Akib-Alvee/TourGuide.git
+git clone https://github.com/bracealround/Result_Processing_System_RPS.git
 ```
 
 ## Run the Project in your Machine
