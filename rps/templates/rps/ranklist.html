@@ -9,14 +9,14 @@
     </div>
     <div class="card-body mt-3">
         {% if assignment == "N/A" %}
-        <table class="table table-bordered table-striped" id="datatablesSimple">
+        <table class="table table-bordered table-striped text-center" id="datatablesSimple">
             <thead class="table-dark">
                 <tr>
-                    <th>Rank</th>
-                    <th>Registration No.</th>
-                    <th>Name</th>
-                    <th>Credits Completed</th>
-                    <th>CGPA</th>
+                    <th class="text-center">Rank</th>
+                    <th class="text-center">Registration No.</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Credits Completed</th>
+                    <th class="text-center">CGPA</th>
                 </tr>
             </thead>
 
@@ -35,15 +35,15 @@
         </table>
         {% else %}
         <h4>Rank list for the course: {{assignment.course}}, taken by {{assignment.teacher}} in {{assignment.year}}</h4>
-        <table class="table table-bordered table-striped" id="datatablesSimple">
+        <table class="table table-bordered table-striped text-center" id="datatablesSimple">
             <thead class="table-dark">
                 <tr>
-                    <th>Rank</th>
-                    <th>Registration No.</th>
-                    <th>Name</th>
-                    <th>Final Mark</th>
-                    <th>GPA</th>
-                    <th>Grade</th>
+                    <th class="text-center">Rank</th>
+                    <th class="text-center">Registration No.</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Final Mark</th>
+                    <th class="text-center">GPA</th>
+                    <th class="text-center">Grade</th>
                 </tr>
             </thead>
 

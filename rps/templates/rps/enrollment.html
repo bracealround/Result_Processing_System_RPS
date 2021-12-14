@@ -8,7 +8,7 @@
 
         <div class="col col-md-4 align-self-start my-auto">
             <div class="card text-white bg-primary mb-3 mx-3" style="max-width: 60rem;">
-                <div class="card-header">
+                <div class="card-header text-center">
                     <h4>Total Courses: {{total_available_courses}}</h4>
                 </div>
                 <div class="card-body"></div>
@@ -16,12 +16,21 @@
         </div>
 
         <div class="col col-md-4">
-            <div class="card text-white bg-dark mb-3" style="max-width: 40rem;">
-                <div class="card-header">
-                    <h4>Courses Enrolled: 3</h4>
+            <div class="card text-white bg-success mb-3" style="max-width: 40rem;">
+                <div class="card-header text-center">
+                    <h4>Courses Enrolled: {{total_courses_enrolled}}</h4>
                 </div>
                 <div class="card-body">
                 </div>
+            </div>
+        </div>
+
+        <div class="col col-md-4 align-self-start my-auto">
+            <div class="card text-white bg-primary mb-3 mx-3" style="max-width: 60rem;">
+                <div class="card-header text-center">
+                    <h4>Enrollment Pending: {{total_courses_pending}}</h4>
+                </div>
+                <div class="card-body"></div>
             </div>
         </div>
     </div>

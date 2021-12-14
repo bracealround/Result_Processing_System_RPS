@@ -49,7 +49,6 @@ class GeneratePdf_view(View):
             total_credits = query_set.aggregate(
                 Sum("enrollment__course__course__credit_no")
             )["enrollment__course__course__credit_no__sum"]
-
             marks = list(query_set)
 
             sum = Decimal("0.0")
@@ -71,7 +70,6 @@ class GeneratePdf_view(View):
             "registration_no": registration_no,
             "department": department,
             "session": session,
-            "total_credits_completed": total_credits
         }
         # d = {str(index): str(value) for index, value in enumerate(list(query_set))}
 
@@ -224,7 +222,12 @@ def enrollment_view(request):
     )
 
     total_courses = query_set.count()
-    total_courses_enrolled = Enrollment.objects.filter(student=student).count()
+    total_courses_enrolled = query_set.filter(
+        has_enrolled=True, is_approved=True
+    ).count()
+    total_courses_pending = query_set.filter(
+        has_enrolled=True, is_approved=False
+    ).count()
 
     return render(
         request,
@@ -232,7 +235,8 @@ def enrollment_view(request):
         {
             "courses": list(query_set),
             "total_available_courses": total_courses,
-            "courses_enrolled": total_courses_enrolled,
+            "total_courses_enrolled": total_courses_enrolled,
+            "total_courses_pending": total_courses_pending,
         },
     )
 
