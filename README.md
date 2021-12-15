@@ -1,21 +1,44 @@
 # Result_Processing_System
 
 
-# Project Description:
-We crated a Result Processing System (RPS) for an university. The app provies the students the scope to look into result related different information stating from differnet teacher, student and staff info, edit their own profile, look into results based on differnet criteria, view the total ranklist for different courses and finally download the result.The teachers will have the functionality to update the result of the courses assigned to them either for individual student or for a course as a csv file. The admin has the ultimate authority to define users, students, teachers, courses, departments, assignment or update or delate any one of the object.
+
+
+## Project Description:
+We created a Result Processing System (RPS) for Universities. The app provides the students, teachers and the administrations a platform to create, update and, manage enrollments and results. Students can enroll courses, view results and the ranklist and download the result. The teachers will have the functionality to update the result of the courses assigned to them either for individual student or for all the students enrolled in a course through a **CSV** file. The admin have the ultimate authority to define users, students, teachers, courses, departments, assignment or update or delete any one of the entity.
+
+
 
 ## Languages Used:
+
  - HTML
  - CSS
  - Javascript
  - Python
 
+
 ## Framework
+
  - Django
+ - Bootstrap
 
-# Functionalities:
 
-## Student Functionalities:
+
+## Functionalities:
+
+
+### Admin Funtionalities:
+
+An admin will have the following functionalities:
+ - Create user
+ - Define different user as teacher as student, teacher or staff
+ - Create new Departments and Courses.
+ - Assign teachers to specific course
+ - Approve the status of differnet students course enrollment
+
+
+
+### Student Functionalities:
+
  A student will have the following functionalities:
  - Login with his specific email and password.
  - Department Details
@@ -32,7 +55,9 @@ We crated a Result Processing System (RPS) for an university. The app provies th
  - Download his up-to-date result
  
  
-## Teacher Functionalities:
+ 
+### Teacher Functionalities:
+
 A Teacher will have the following funtionalities:
  - Login with his specific email and password.
  - Department Details
@@ -48,16 +73,10 @@ A Teacher will have the following funtionalities:
  - Update the result for a course as awhole with CSV.
  - Download the result.
 
-## Admin Funtionalities:
-An admin will have the following functionalities:
- - Create user
- - Define different user as teacher as student, teacher or staff
- - Create new Departments and Courses.
- - Assign teachers to specific course
- - Approve the status of differnet students course enrollment
 
 
-# :wrench: Dependencies and Installation
+
+## :wrench: Dependencies and Installation
 
 Make sure that the target systems on which you'd like to run `Result_Processing_System_RPS` has python3 installed along with one of the python package managers among `pip`, `pip3` or `pipenv`.
 
@@ -78,7 +97,7 @@ Or, alternatively you can manually download this Repo by clicking "Code" > "Down
 ```bash
 cd Result_Processing_System_RPS
 ```
-## Installation
+### Installation
 
 Follow [this](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) or [this](https://docs.python.org/3/tutorial/venv.html) documentation to setup python virtual environment, if you want to run the project and install packages in an isolated environment for your convenience or you can skip this step.
 
@@ -106,7 +125,9 @@ Give an **Email** and a **password** for the super-user to create a super-user.
 python3 manage.py runserver
 ```
 
- You can create as many students or teachers as you want in admin site. Then visit `localhost:8080/` to use the app using those credentials created by the super-user.
+#### You can create as many students or teachers as you want in admin site. Then visit `localhost:8080/` to use the app using those credentials created by the super-user.
+
+
 
 ## Screenshots
 
@@ -146,10 +167,12 @@ python3 manage.py runserver
 </p>
 
 
+
 ## Presentation
 
 
 https://user-images.githubusercontent.com/50485574/146090277-f3b0861f-f434-4108-8ad0-2188138a68fd.mp4
+
 
 
 
