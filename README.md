@@ -4,7 +4,7 @@
 
 
 ## Project Description:
-We created a Result Processing System (RPS) for Universities. The app provides the students, teachers and the administrations a platform to create, update and, manage enrollments and results. Students can enroll courses, view results and the ranklist and download the result. The teachers will have the functionality to update the result of the courses assigned to them either for individual student or for all the students enrolled in a course through a **CSV** file. The admin have the ultimate authority to define users, students, teachers, courses, departments, assignment or update or delete any one of the entity.
+We created a Result Processing System (RPS) for Universities as our academic project. The app provides the students, teachers and the administrations a platform to create, update and, manage enrollments and results. Students can enroll courses, view results and the ranklist and download the result. The teachers will have the functionality to update the result of the courses assigned to them either for individual student or for all the students enrolled in a course through a **CSV** file. The admin have the ultimate authority to define users, students, teachers, courses, departments, assignment or update or delete any one of the entity.
 
 
 
