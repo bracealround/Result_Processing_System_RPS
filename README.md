@@ -56,29 +56,57 @@ An admin will have the following functionalities:
  - Assign teachers to specific course
  - Approve the status of differnet students course enrollment
 
-## Clone this Project:
-```
+
+# :wrench: Dependencies and Installation
+
+Make sure that the target systems on which you'd like to run `Result_Processing_System_RPS` has python3 installed along with one of the python package managers among `pip`, `pip3` or `pipenv`.
+
+
+### Clone this Project:
+
+If your machine has `git` installed then run the following command:
+
+```bash
 git clone https://github.com/bracealround/Result_Processing_System_RPS.git
 ```
+Or, alternatively you can manually download this Repo by clicking "Code" > "Download ZIP" and then extract it.
 
-## Run the Project in your Machine
 
-Install virtual environment :
+
+### Change working directory to `Result_Processing_System_RPS` :
+
+```bash
+cd Result_Processing_System_RPS
 ```
-pip install virtualenv
-```
-Create your own environment :
-```
-pipenv shell
-```
-Now install requirements.txt :
-```
+## Installation
+
+Follow [this](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) or [this](https://docs.python.org/3/tutorial/venv.html) documentation to setup python virtual environment, if you want to run the project and install packages in an isolated environment for your convenience or you can skip this step.
+
+#### Run the following commands to install all the required packages, apply database migrations and create super-user for the database
+
+```bash
+#### Install dependencies using `pip`, `pip3` or `pipenv`:
 pip install -r requirements.txt
+
+# Apply migrations:
+python3 manage.py migrate
+
+# Create Super User
+python3 manage.py createsuperuser
 ```
-Then run the server :
+
+Give an **Email** and a **password** for the super-user to create a super-user.
+
+
+
+#### Finally run the following command to start the http server at default port and visit `localhost:8080/admin`
+
+```bash
+# Start server
+python3 manage.py runserver
 ```
-python manage.py runserver
-```
+
+ You can create as many students or teachers as you want in admin site. Then visit `localhost:8080/` to use the app using those credentials created by the super-user.
 
 ## Screenshots
 
